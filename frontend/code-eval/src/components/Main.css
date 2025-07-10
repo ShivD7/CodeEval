@@ -1,0 +1,160 @@
+/* Layout setup */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.left-panel {
+  width: 50%;
+  padding: 2rem;
+  background-color: #f4f4f4;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.right-panel {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  color: white;
+  position: relative;
+}
+
+.controls {
+  padding: 1rem;
+  background-color: #1e1e1e;
+}
+
+.editor-wrapper {
+  flex: 1;
+  position: relative; /* Needed for absolute output panel */
+}
+
+/* Monaco Editor styles are auto-handled */
+
+/* Language Dropdown */
+.language-select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #2d2d2d;
+  color: #fff;
+  margin-bottom: 1rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.run-button {
+  background-color: #333;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  margin-left: 1rem;
+}
+
+.run-button:hover {
+  background-color: #444;
+}
+
+/* Floating output overlay */
+.floating-output {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background-color: #111;
+  color: #00ff88;
+  font-family: monospace;
+  white-space: pre-wrap;
+  border-top: 2px solid #444;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+  z-index: 10;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: #00ffaa;
+  font-weight: bold;
+}
+
+.close-output {
+  background: none;
+  border: none;
+  color: #ff6666;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.floating-output {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #111;
+  color: #00ff88;
+  font-family: monospace;
+  white-space: pre-wrap;
+  border-top: 2px solid #444;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+  z-index: 10;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  resize: none; /* We control resizing manually */
+}
+
+.resize-handle {
+  height: 8px;
+  cursor: ns-resize;
+  background: repeating-linear-gradient(
+    90deg,
+    #555,
+    #555 4px,
+    #444 4px,
+    #444 8px
+  );
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  margin: -1rem -1rem 0 -1rem;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #00ffaa;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.close-output {
+  background: beige;
+  border: none;
+  color: #ff6666;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
