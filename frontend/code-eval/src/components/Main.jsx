@@ -1,5 +1,13 @@
 import Editor from "@monaco-editor/react";
 import { useState, useRef } from "react";
+import {
+  Sidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  sidebarClasses,
+  menuClasses,
+} from 'react-pro-sidebar';
 import './Main.css';
 
 function Main() {
@@ -8,6 +16,8 @@ function Main() {
   const [showOutput, setShowOutput] = useState(false);
   const [outputHeight, setOutputHeight] = useState(200);
   const resizing = useRef(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const sidebarRef = useRef(null);
 
   const handleRun = () => {
     setOutput(`Output for ${language} code:\nHello, world!`);
@@ -42,6 +52,74 @@ function Main() {
 
   return (
     <div className="main-container">
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        style={{
+          position: 'absolute',
+          top: 20,
+          left: collapsed ? 60 : 220,
+          zIndex: 1000,
+          backgroundColor: '#222',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          padding: '0.5rem 1rem',
+          cursor: 'pointer',
+          transition: 'left 0.3s ease',
+        }}
+      >
+        {collapsed ? '☰' : '✖'}
+      </button>
+
+      {/* Sidebar with rootStyles */}
+      <Sidebar
+        collapsed={collapsed}
+        ref={sidebarRef}
+        width="246px"
+        collapsedWidth="60px"
+        rootStyles={{
+          [`.${sidebarClasses.container}`]: {
+            height: '100vh',
+            backgroundColor: '#121212',
+            color: '#ffffff',
+            borderRight: '1px solid #2a2a2a',
+            transition: 'width 0.3s ease',
+          },
+          [`.${menuClasses.button}`]: {
+            color: '#ffffff',
+            fontSize: '1rem',
+            padding: '0.75rem 1rem',
+            borderRadius: '6px',
+          },
+          [`.${menuClasses.button}:hover`]: {
+            backgroundColor: '#2a2a2a',
+            color: '#00ffaa',
+          },
+          [`.${menuClasses.subMenuContent}`]: {
+            backgroundColor: '#181818',
+            paddingLeft: '1rem',
+          },
+        }}
+      >
+        <Menu>
+          <MenuItem>🏠 Home</MenuItem>
+          <SubMenu label="POWs">
+            <MenuItem>POW #1</MenuItem>
+            <MenuItem>POW #2</MenuItem>
+            <MenuItem>POW #3</MenuItem>
+          </SubMenu>
+          <SubMenu label="Monthly Contest">
+            <MenuItem>Problem #1</MenuItem>
+            <MenuItem>Problem #2</MenuItem>
+            <MenuItem>Problem #3</MenuItem>
+            <MenuItem>Problem #4</MenuItem>
+            <MenuItem>Problem #5</MenuItem>
+          </SubMenu>
+          <MenuItem>📈 Submissions</MenuItem>
+          <MenuItem>⚙️ Settings</MenuItem>
+        </Menu>
+      </Sidebar>
+
       <div className="left-panel">
         <h2>Problem Title Placeholder</h2>
         <p>Problem description goes here.</p>

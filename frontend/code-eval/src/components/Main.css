@@ -18,6 +18,8 @@ html, body, #root {
   background-color: #f4f4f4;
   overflow-y: auto;
   box-sizing: border-box;
+  margin-left: 0px;
+  padding-left: 0%;
 }
 
 .right-panel {
@@ -35,10 +37,19 @@ html, body, #root {
 }
 
 .editor-wrapper {
-  flex: 1;
-  position: relative; /* Needed for absolute output panel */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 0; /* Allows Monaco to shrink properly */
 }
 
+.editor-wrapper > div {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
 /* Monaco Editor styles are auto-handled */
 
 /* Language Dropdown */
@@ -151,7 +162,7 @@ html, body, #root {
 }
 
 .close-output {
-  background: beige;
+  background: none;
   border: none;
   color: #ff6666;
   font-size: 1.2rem;
