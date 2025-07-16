@@ -10,6 +10,8 @@ import {
 } from 'react-pro-sidebar';
 import './Main.css';
 
+
+
 function Main() {
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
@@ -18,9 +20,18 @@ function Main() {
   const resizing = useRef(false);
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef(null);
+  const [code, setCode] = useState("// Write your code here");
+  const javascriptID = 63;
+  const pythonID = 71;
+  const javaID = 62;
+  const cPlusPlusID = 54;
+  
 
   const handleRun = () => {
-    setOutput(`Output for ${language} code:\nHello, world!`);
+    
+    setOutput(`Output for ${language}`);
+    const sourceCode = btoa(code);
+    console.log(sourceCode);
     setShowOutput(true);
   };
 
@@ -148,6 +159,9 @@ function Main() {
             language={language}
             defaultValue="// Write your code here"
             theme="vs-dark"
+            value = {code}
+            onChange={(value) => setCode(value ?? "")}
+            
           />
 
           {showOutput && (
