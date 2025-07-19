@@ -10,8 +10,6 @@ import {
 } from 'react-pro-sidebar';
 import './Main.css';
 
-
-
 function Main() {
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
@@ -21,19 +19,35 @@ function Main() {
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef(null);
   const [code, setCode] = useState("// Write your code here");
-  const javascriptID = 63;
-  const pythonID = 71;
-  const javaID = 62;
-  const cPlusPlusID = 54;
+
+
   
 
-  const handleRun = () => {
-    
-    setOutput(`Output for ${language}`);
-    const sourceCode = btoa(code);
-    console.log(sourceCode);
+  const handleRun = async () => {
     setShowOutput(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          code: btoa(code),
+          language: language
+        })
+      });
+
+      const data = await response.json();
+      setOutput(data.output);  // assuming backend responds with { output: "..." }
+    } catch (error) {
+      console.error("Error sending code:", error);
+      setOutput("Failed to execute code.");
+    }
   };
+
+
+
 
   const handleCloseOutput = () => {
     setShowOutput(false);
@@ -157,7 +171,7 @@ function Main() {
             height="100%"
             width="100%"
             language={language}
-            defaultValue="// Write your code here"
+            defaultValue="#Write your code here"
             theme="vs-dark"
             value = {code}
             onChange={(value) => setCode(value ?? "")}

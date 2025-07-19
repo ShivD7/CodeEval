@@ -7,6 +7,6 @@ export default defineConfig({
   base: "/CodeEval/",
   server: {
     open: true,
-    port: 3001,
+    port: 3000,
   }
 })
