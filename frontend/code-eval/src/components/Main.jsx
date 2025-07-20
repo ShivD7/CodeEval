@@ -9,6 +9,7 @@ import {
   menuClasses,
 } from 'react-pro-sidebar';
 import './Main.css';
+import { Link } from "react-router-dom";
 
 function Main() {
   const [language, setLanguage] = useState("javascript");
@@ -127,7 +128,7 @@ function Main() {
         }}
       >
         <Menu>
-          <MenuItem>🏠 Home</MenuItem>
+          <MenuItem component={<Link to="/home" />}>🏠 Home</MenuItem>
           <SubMenu label="POWs">
             <MenuItem>POW #1</MenuItem>
             <MenuItem>POW #2</MenuItem>

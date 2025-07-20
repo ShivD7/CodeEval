@@ -53,7 +53,8 @@ def getToken(sourceCode, language):
     payload = {
         "language_id": languages[language],
         "source_code": sourceCode,
-        "stdin": "world"
+        "stdin": base64.b64encode("world".encode()).decode(),
+        "expected_output": base64.b64encode("hello world".encode()).decode()
     }
     headers = {
         "x-rapidapi-key": os.getenv('api_key'),
@@ -92,7 +93,13 @@ def execute_code():
         if (output['status_id'] == 1 or output['status_id'] == 2):
             time.sleep(1)
         elif (output['status_id'] == 3):
-            break
+            encodedString =output['stdout']
+            decodedString = base64.b64decode(encodedString).decode('utf-8')
+            return jsonify({"output": f"Successfully received {language} code. The following output is correct:\n{decodedString}"})
+        elif (output['status_id'] == 4):
+            encodedString =output['stdout']
+            decodedString = base64.b64decode(encodedString).decode('utf-8')
+            return jsonify({"output": f"Successfully received {language} code. The following output is incorrect:\n{decodedString}"})
         elif (output['status_id'] == 5):
             return jsonify({"output": f"Time Limit Exceeded"})
         elif (output['status_id'] == 6):
@@ -102,9 +109,7 @@ def execute_code():
               or output['status_id'] == 10 or output['status_id'] == 11
               or output['status_id'] == 12 or output['status_id'] == 13):
             return jsonify({"output": f"Runtime Error"})
-    encodedString =output['stdout']
-    decodedString = base64.b64decode(encodedString).decode('utf-8')
-    return jsonify({"output": f"Successfully received {language} code:\n{decodedString}"})
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=3001)

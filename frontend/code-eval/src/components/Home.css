@@ -1,0 +1,33 @@
+.home-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.home-content {
+  flex: 1;
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2.5rem; /* adds vertical spacing between h1 and each paragraph */
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.home-content h1 {
+  font-size: 3rem;
+}
+
+.home-content .highlight {
+  color: #00ffaa;
+}
+
+.home-content p {
+  font-size: 1.25rem;
+  line-height: 2rem;
+}
