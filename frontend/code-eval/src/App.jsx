@@ -6,9 +6,6 @@ import ProblemPage from './components/ProblemPage'
 import Home from './components/Home'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SubmissionPage from './components/SubmissionPage'
-import { ArrayProvider } from './components/ArrayContext.jsx'
-import SubmissionPage from './components/SubmissionPage.jsx'
-import ProblemPage from './components/ProblemPage'
 
 function App() {
   const [count, setCount] = useState(0)
