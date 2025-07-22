@@ -1,0 +1,8 @@
+.submission-container {
+  background-color: black; /* Black background */
+  border-radius: 15px;      /* Rounded edges */
+  padding: 20px;            /* Optional: padding for content */
+  color: white;             /* White text for contrast */
+  width: 1000px;
+  height:200px;
+}

@@ -5,6 +5,7 @@ import time
 import base64
 from dotenv import load_dotenv
 import os
+import readFile
 
 def configure():
     load_dotenv()
@@ -43,7 +44,7 @@ def getStatus():
 
     print(response.json())
 
-def getToken(sourceCode, language):
+def getToken(sourceCode, language, stdin, expected_output):
     
 
     url = "https://judge0-ce.p.rapidapi.com/submissions"
@@ -53,8 +54,8 @@ def getToken(sourceCode, language):
     payload = {
         "language_id": languages[language],
         "source_code": sourceCode,
-        "stdin": base64.b64encode("world".encode()).decode(),
-        "expected_output": base64.b64encode("hello world".encode()).decode()
+        "stdin": base64.b64encode(stdin.encode()).decode(),
+        "expected_output": base64.b64encode(expected_output.encode()).decode()
     }
     headers = {
         "x-rapidapi-key": os.getenv('api_key'),
@@ -84,31 +85,39 @@ def execute_code():
     data = request.get_json()
     code = data.get('code', '')
     language = data.get('language', '')
-    print(f"Received code:\n{code}\nLanguage: {language}")
+    path = data.get('path', '')
+    print(f"Received code:\n{code}\nLanguage: {language}.\nPath: {path}")
     # For now, just return a dummy output
-    token = getToken(code, language)
-    output = ''
-    while True:
-        output = getOutput(token)
-        if (output['status_id'] == 1 or output['status_id'] == 2):
-            time.sleep(1)
-        elif (output['status_id'] == 3):
-            encodedString =output['stdout']
-            decodedString = base64.b64decode(encodedString).decode('utf-8')
-            return jsonify({"output": f"Successfully received {language} code. The following output is correct:\n{decodedString}"})
-        elif (output['status_id'] == 4):
-            encodedString =output['stdout']
-            decodedString = base64.b64decode(encodedString).decode('utf-8')
-            return jsonify({"output": f"Successfully received {language} code. The following output is incorrect:\n{decodedString}"})
-        elif (output['status_id'] == 5):
-            return jsonify({"output": f"Time Limit Exceeded"})
-        elif (output['status_id'] == 6):
-            return jsonify({"output": f"Compilation Error"})
-        elif (output['status_id'] == 6 or output['status_id'] == 7 
-              or output['status_id'] == 8 or output['status_id'] == 9
-              or output['status_id'] == 10 or output['status_id'] == 11
-              or output['status_id'] == 12 or output['status_id'] == 13):
-            return jsonify({"output": f"Runtime Error"})
+    testCases = readFile.read_file(path)
+    testcaseCount = 1
+    outputString = ''
+    for testcase in testCases:
+        token = getToken(code, language, testcase[0], testcase[1])
+        output = ''
+        while True:
+            output = getOutput(token)
+            if (output['status_id'] == 1 or output['status_id'] == 2):
+                time.sleep(1)
+            elif (output['status_id'] == 3):
+                outputString += "\nTestcase " + str(testcaseCount) + ": Accepted :)"
+                break
+            elif (output['status_id'] == 4):
+                outputString += "\nTestcase " + str(testcaseCount) + ": Rejected :("
+                break
+            elif (output['status_id'] == 5):
+                outputString += "\nTestcase " + str(testcaseCount)+ ": Time Limit Exceeded"
+                break
+            elif (output['status_id'] == 6):
+                outputString += "\nTestcase " + str(testcaseCount) + ": Compilation Error"
+                break
+            elif (output['status_id'] == 6 or output['status_id'] == 7 
+                or output['status_id'] == 8 or output['status_id'] == 9
+                or output['status_id'] == 10 or output['status_id'] == 11
+                or output['status_id'] == 12 or output['status_id'] == 13):
+                outputString += "\nTestcase "+ str(testcaseCount)+ ": Runtime Error"
+                break
+        testcaseCount += 1
+    return jsonify({"output": outputString})
 
 
 if __name__ == '__main__':

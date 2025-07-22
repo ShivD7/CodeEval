@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import {
   Sidebar,
   Menu,
@@ -8,10 +8,10 @@ import {
   sidebarClasses,
   menuClasses,
 } from 'react-pro-sidebar';
-import './Main.css';
-import { Link } from "react-router-dom";
+import './ProblemPage.css';
+import { Link, useLocation } from "react-router-dom";
 
-function Main() {
+function ProblemPage({title, description}) {
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
   const [showOutput, setShowOutput] = useState(false);
@@ -20,13 +20,11 @@ function Main() {
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef(null);
   const [code, setCode] = useState("// Write your code here");
-
-
-  
+  const location = useLocation();
 
   const handleRun = async () => {
     setShowOutput(true);
-
+    const currentpath = location.pathname;
     try {
       const response = await fetch("http://localhost:3001/execute", {
         method: "POST",
@@ -35,7 +33,8 @@ function Main() {
         },
         body: JSON.stringify({
           code: btoa(code),
-          language: language
+          language: language,
+          path: currentpath
         })
       });
 
@@ -51,6 +50,7 @@ function Main() {
 
 
   const handleCloseOutput = () => {
+    setOutput('');
     setShowOutput(false);
   };
 
@@ -105,50 +105,51 @@ function Main() {
         collapsedWidth="60px"
         rootStyles={{
           [`.${sidebarClasses.container}`]: {
-            height: '100vh',
-            backgroundColor: '#121212',
-            color: '#ffffff',
-            borderRight: '1px solid #2a2a2a',
-            transition: 'width 0.3s ease',
+            height: "100vh",
+            backgroundColor: "#121212",
+            color: "#ffffff",
+            borderRight: "1px solid #2a2a2a",
+            transition: "width 0.3s ease",
           },
           [`.${menuClasses.button}`]: {
-            color: '#ffffff',
-            fontSize: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '6px',
+            color: "#ffffff",
+            fontSize: "1rem",
+            padding: "0.75rem 1rem",
+            borderRadius: "6px",
           },
           [`.${menuClasses.button}:hover`]: {
-            backgroundColor: '#2a2a2a',
-            color: '#00ffaa',
+            backgroundColor: "#2a2a2a",
+            color: "#00ffaa",
           },
           [`.${menuClasses.subMenuContent}`]: {
-            backgroundColor: '#181818',
-            paddingLeft: '1rem',
+            backgroundColor: "#181818",
+            paddingLeft: "1rem",
           },
         }}
       >
         <Menu>
           <MenuItem component={<Link to="/home" />}>🏠 Home</MenuItem>
           <SubMenu label="POWs">
-            <MenuItem>POW #1</MenuItem>
-            <MenuItem>POW #2</MenuItem>
-            <MenuItem>POW #3</MenuItem>
+            <MenuItem component={<Link to="/pow1" />}>POW #1</MenuItem>
+            <MenuItem component={<Link to="/pow2" />}>POW #2</MenuItem>
+            <MenuItem component={<Link to="/pow3" />}>POW #3</MenuItem>
+            <MenuItem component={<Link to="/pow4" />}>POW #4</MenuItem>
           </SubMenu>
           <SubMenu label="Monthly Contest">
-            <MenuItem>Problem #1</MenuItem>
-            <MenuItem>Problem #2</MenuItem>
-            <MenuItem>Problem #3</MenuItem>
-            <MenuItem>Problem #4</MenuItem>
-            <MenuItem>Problem #5</MenuItem>
+            <MenuItem component={<Link to="/contest1" />}>Problem #1</MenuItem>
+            <MenuItem component={<Link to="/contest2" />}>Problem #2</MenuItem>
+            <MenuItem component={<Link to="/contest3" />}>Problem #3</MenuItem>
+            <MenuItem component={<Link to="/contest4" />}>Problem #4</MenuItem>
+            <MenuItem component={<Link to="/contest5" />}>Problem #5</MenuItem>
           </SubMenu>
-          <MenuItem>📈 Submissions</MenuItem>
-          <MenuItem>⚙️ Settings</MenuItem>
+          <MenuItem component={<Link to="/submissions" />}>📈 Submissions</MenuItem>
+          <MenuItem component={<Link to="/settings" />}>⚙️ Settings</MenuItem>
         </Menu>
       </Sidebar>
 
       <div className="left-panel">
-        <h2>Problem Title Placeholder</h2>
-        <p>Problem description goes here.</p>
+        <h2>{title}</h2>
+        <p>{description}</p>
       </div>
 
       <div className="right-panel">
@@ -204,4 +205,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default ProblemPage;

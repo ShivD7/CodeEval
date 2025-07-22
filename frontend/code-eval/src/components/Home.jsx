@@ -74,11 +74,11 @@ function Home() {
             <MenuItem component={<Link to="/pow4" />}>POW #4</MenuItem>
           </SubMenu>
           <SubMenu label="Monthly Contest">
-            <MenuItem component={<Link to="/monthlyQ1" />}>Problem #1</MenuItem>
-            <MenuItem component={<Link to="/monthlyQ2" />}>Problem #2</MenuItem>
-            <MenuItem component={<Link to="/monthlyQ3" />}>Problem #3</MenuItem>
-            <MenuItem component={<Link to="/monthlyQ4" />}>Problem #4</MenuItem>
-            <MenuItem component={<Link to="/monthlyQ5" />}>Problem #5</MenuItem>
+            <MenuItem component={<Link to="/contest1" />}>Problem #1</MenuItem>
+            <MenuItem component={<Link to="/contest2" />}>Problem #2</MenuItem>
+            <MenuItem component={<Link to="/contest3" />}>Problem #3</MenuItem>
+            <MenuItem component={<Link to="/contest4" />}>Problem #4</MenuItem>
+            <MenuItem component={<Link to="/contest5" />}>Problem #5</MenuItem>
           </SubMenu>
           <MenuItem component={<Link to="/submissions" />}>📈 Submissions</MenuItem>
           <MenuItem component={<Link to="/settings" />}>⚙️ Settings</MenuItem>
