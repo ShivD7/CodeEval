@@ -12,9 +12,11 @@ html, body, #root {
   align-items: center;
   height: 50vh;
   background: linear-gradient(135deg, #1a1a1a, #232323);
+  width: 100vh;
   padding: 40px;
   box-sizing: border-box;
   margin-top: 10%;
+  margin-right:23%
 }
 
 .message-card {
