@@ -10,6 +10,7 @@ import {
 } from 'react-pro-sidebar';
 import './ProblemPage.css';
 import { Link, useLocation } from "react-router-dom";
+import Context from './Context.jsx'
 
 function ProblemPage({title, description}) {
   const [language, setLanguage] = useState("javascript");
@@ -21,9 +22,10 @@ function ProblemPage({title, description}) {
   const sidebarRef = useRef(null);
   const [code, setCode] = useState("// Write your code here");
   const location = useLocation();
-
+  const userData = useContext(Context);
   const handleRun = async () => {
     setShowOutput(true);
+    const submissionArr = userData.submissions;
     const currentpath = location.pathname;
     try {
       const response = await fetch("http://localhost:3001/execute", {
@@ -40,6 +42,7 @@ function ProblemPage({title, description}) {
 
       const data = await response.json();
       setOutput(data.output);  // assuming backend responds with { output: "..." }
+      submissionArr.push([code, title, data.output]);
     } catch (error) {
       console.error("Error sending code:", error);
       setOutput("Failed to execute code.");

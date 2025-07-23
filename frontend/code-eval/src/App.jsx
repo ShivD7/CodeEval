@@ -6,11 +6,14 @@ import ProblemPage from './components/ProblemPage'
 import Home from './components/Home'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SubmissionPage from './components/SubmissionPage'
-
+import Context from "./components/Context.jsx"
 function App() {
-  const [count, setCount] = useState(0)
+  const userInfo = {
+    submissions: []
+  }
 
   return (
+    <Context.Provider value = {userInfo}>
       <Router basename="/CodeEval">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -45,6 +48,7 @@ function App() {
           <Route path="/submissions" element={<SubmissionPage/>} />                                                                                                                                                                                      
         </Routes>
       </Router>
+    </Context.Provider>
   )
 }
 

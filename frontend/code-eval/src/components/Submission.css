@@ -1,8 +1,42 @@
 .submission-container {
-  background-color: black; /* Black background */
-  border-radius: 15px;      /* Rounded edges */
-  padding: 20px;            /* Optional: padding for content */
-  color: white;             /* White text for contrast */
+  
+  background: linear-gradient(135deg, #1a1a1a, #232323); /* Dark gradient */
+  border-radius: 16px;
+  padding: 30px;
+  color: #e6e6e6;
   width: 1000px;
-  height:200px;
+  height: auto;
+  margin: 2rem auto; /* Center horizontally */
+  flex: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-left: 23%;
+  box-sizing: border-box;
+  overflow: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); /* Match no-submissions */
+  transition: background 0.3s ease-in-out;
+}
+
+/* Left and right panels */
+.leftPanel,
+.rightPanel {
+  flex: 1;
+  padding: 0 20px;
+  overflow: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ccc;
+}
+
+.leftPanel {
+  border-right: 2px solid #333;
+}
+
+.rightPanel {
+  padding-left: 30px;
+}
+
+/* Optional hover effect (to match the "message-card" style) */
+.submission-container:hover {
+  background: linear-gradient(135deg, #232323, #1a1a1a);
 }
