@@ -9,11 +9,12 @@ const Submission = ({title, code, resultString}) => {
         <div className='leftPanel'>
           <h3>Problem: {title}</h3>
           <h5>Solution:</h5>
-          <p>{code}</p>
+          <pre className="code-block">{code}</pre>
         </div>
         <div className = 'rightPanel'>
-            <h3>Result:</h3>
-            <p>{resultString}</p>
+            <h3>Testcases</h3>
+            <h5>Result:</h5>
+            <pre className="result-block">{resultString}</pre>
         </div>
       </div>
     )

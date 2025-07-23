@@ -27,6 +27,7 @@ function ProblemPage({title, description}) {
     setShowOutput(true);
     const submissionArr = userData.submissions;
     const currentpath = location.pathname;
+    console.log(code);
     try {
       const response = await fetch("http://localhost:3001/execute", {
         method: "POST",

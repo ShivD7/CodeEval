@@ -172,9 +172,10 @@ const SubmissionPage = () => {
         </Sidebar>
         <div className = "submissions">
             {submissionArr
-                .slice(-3) // get last 5 submissions
-                .reverse() // optional: to show the newest first
+                .slice(-2) // get last 2 submissions
+                .reverse() 
                 .map((submission, index) => (
+
                 <Submission
                     key={index}
                     code={submission[0]}

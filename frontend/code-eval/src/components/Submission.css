@@ -40,3 +40,24 @@
 .submission-container:hover {
   background: linear-gradient(135deg, #232323, #1a1a1a);
 }
+
+.code-block, .result-block {
+  background-color: black;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre;
+  overflow: auto;
+  margin: 8px 0;
+  height: 100px; 
+  word-wrap: break-word;
+  tab-size: 4; 
+}
+
+.result-block {
+  background-color: black;
+  border: 1px solid #ccc;
+}
