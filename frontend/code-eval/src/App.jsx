@@ -7,6 +7,9 @@ import Home from './components/Home'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SubmissionPage from './components/SubmissionPage'
 import Context from "./components/Context.jsx"
+import SettingPage from './components/SettingPage.jsx'
+import LoginPage from './components/LoginPage.jsx'
+import SignupPage from './components/SignupPage.jsx'
 function App() {
   const userInfo = {
     submissions: []
@@ -16,7 +19,8 @@ function App() {
     <Context.Provider value = {userInfo}>
       <Router basename="/CodeEval">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<Home />} />
           <Route path="/pow1" element={<ProblemPage
                                         title = "Two Sum"
@@ -45,7 +49,9 @@ function App() {
           <Route path="/contest5" element={<ProblemPage
                                         title = "11 Sum"
                                         description = "Hola"/>} />
-          <Route path="/submissions" element={<SubmissionPage/>} />                                                                                                                                                                                      
+          <Route path="/submissions" element={<SubmissionPage/>} />
+          <Route path="/settings" element={<SettingPage/>} /> 
+          <Route path="/signup" element={<SignupPage/>} />                                                                                                                                                                                        
         </Routes>
       </Router>
     </Context.Provider>
