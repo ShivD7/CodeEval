@@ -1,3 +1,4 @@
+//password for outlook acc: csclub!
 import {React, useState} from 'react'
 import './SignupPage.css'
 import { Form, Input } from 'antd';
@@ -5,19 +6,33 @@ import {Link, Navigate} from 'react-router-dom'
 import {doCreateUserWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth';
 import {useAuth} from '../contexts/authContext' 
 import googleLogo from './googleLogo.jpeg'
+import { sendEmailVerification } from 'firebase/auth'
 const SignupPage = () => {
   const { userLoggedIn } = useAuth();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSignUp, setSignUp] = useState(false)
   const onSubmit = async (e) => {
-    e.preventDefault()
-    if (!isSignUp){
-        setSignUp(true)
-        await doCreateUserWithEmailAndPassword(email, password)
-    }
+    e.preventDefault();
+    console.log(isSignUp);
 
-  }
+    if (!isSignUp) {
+        setSignUp(true);
+
+        try {
+        const userCredentials = await doCreateUserWithEmailAndPassword(email, password);
+        const user = userCredentials.user;
+
+        console.log("User created:", user);
+
+        await sendEmailVerification(user);
+        console.log("Verification email sent");
+        } catch (error) {
+        console.error("Error during sign up or verification:", error.message);
+        }
+    }
+    };
+
 
   const onGoogleSignIn = (e) => {
     e.preventDefault()
@@ -27,6 +42,11 @@ const SignupPage = () => {
             setSignUp(false)
         })
     }
+  }
+
+  const changeState = (e) => {
+    e.preventDefault()
+    setSignUp(false)
   }
 
   const handleChangeEmail = (e) => {
@@ -39,7 +59,7 @@ const SignupPage = () => {
   }
   return (
       <div className = "signup-container">
-          {userLoggedIn && (<Navigate to={'/home'} replace = {true}/>)}
+          {userLoggedIn && (<Navigate to={'/login'} replace = {true}/>)}
           <div className = "signup-input-box">
               <h1 className = "signup-title">Sign-Up</h1>
               <Form layout="vertical">
