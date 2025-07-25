@@ -38,57 +38,57 @@ const SignupPage = () => {
     setPassword(newValue);
   }
   return (
-    <div className = "main-container">
-        {userLoggedIn && (<Navigate to={'/home'} replace = {true}/>)}
-        <div className = "input-box">
-            <h1 className = "main-title">Sign-Up</h1>
-            <Form layout="vertical">
-            <Form.Item
-                label={<span style={{ color: '#00ffaa'}}>E-mail Address</span>}
-                name="e-mail"
-                rules={[
-                { required: true, message: 'Please input your e-mail!' },
-                ]}
-                help={<span style={{ color: '#00ffaa'}}>Please enter a valid e-mail!</span>}
-                style={{ marginBottom: 60, marginTop: 5, width: 200 }}
-            >
-                <Input placeholder="example123@gmail.com" 
-                value = {email}
-                onChange = {handleChangeEmail}/>
-            </Form.Item>
-            <Form.Item
-                label={<span style={{ color: '#00ffaa'}}>Password</span>}
-                name="password"
-                rules={[
-                { required: true, message: 'Please input your password!' },
-                { min: 8, max: 20, message: 'Must be 8–20 characters long.' }
-                ]}
-                help={<span style={{ color: '#00ffaa'}}>Must be 8–20 characters long.</span>}
-                style={{ marginBottom: 50, width: 200 }}
-            >
-                <Input.Password placeholder=""
-                value = {password}
-                onChange = {handleChangePassword} />
-            </Form.Item>
-            </Form>
-            <button className = "log-in-button" onClick={onSubmit}>
-                Sign-Up
-            </button>
-            <hr className="line"></hr>
-            <p className = "smallText">OR</p>    
-            <button className="google-signup-btn" onClick={onGoogleSignIn} aria-label="Sign up with Google">
-                <img
-                    src={googleLogo}
-                    alt="Google logo"
-                    className="google-icon"
-                />
-                
-                <span>Sign up with Google</span>
-            </button>
-            
-            <h5 className = "sign-up">Already have an account? Log in <Link to="/login">here</Link></h5>
-        </div>
-    </div>
+      <div className = "signup-container">
+          {userLoggedIn && (<Navigate to={'/home'} replace = {true}/>)}
+          <div className = "signup-input-box">
+              <h1 className = "signup-title">Sign-Up</h1>
+              <Form layout="vertical">
+              <Form.Item
+                  label={<span style={{ color: '#00ffaa'}}>E-mail Address</span>}
+                  name="e-mail"
+                  rules={[
+                  { required: true, message: 'Please input your e-mail!' },
+                  ]}
+                  help={<span style={{ color: '#00ffaa'}}>Please enter a valid e-mail!</span>}
+                  style={{ marginBottom: 60, marginTop: 5, width: 200 }}
+              >
+                  <Input placeholder="example123@gmail.com" 
+                  value = {email}
+                  onChange = {handleChangeEmail}/>
+              </Form.Item>
+              <Form.Item
+                  label={<span style={{ color: '#00ffaa'}}>Password</span>}
+                  name="password"
+                  rules={[
+                  { required: true, message: 'Please input your password!' },
+                  { min: 8, max: 20, message: 'Must be 8–20 characters long.' }
+                  ]}
+                  help={<span style={{ color: '#00ffaa'}}>Must be 8–20 characters long.</span>}
+                  style={{ marginBottom: 50, width: 200 }}
+              >
+                  <Input.Password placeholder=""
+                  value = {password}
+                  onChange = {handleChangePassword} />
+              </Form.Item>
+              </Form>
+              <button className = "sign-up-button" onClick={onSubmit}>
+                  Sign-Up
+              </button>
+              <hr className="signup-line"></hr>
+              <p className = "signupSmallText">OR</p>    
+              <button className="google-signup-btn" onClick={onGoogleSignIn} aria-label="Sign up with Google">
+                  <img
+                      src={googleLogo}
+                      alt="Google logo"
+                      className="google-icon"
+                  />
+                  
+                  <span>Sign up with Google</span>
+              </button>
+              
+              <h5 className = "sign-up">Already have an account? Log in <Link to="/login">here</Link></h5>
+          </div>
+      </div>
   )
 }
 
