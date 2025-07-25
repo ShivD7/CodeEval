@@ -61,3 +61,48 @@
     border-radius: 16px;
 }
 
+
+.google-signup-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  color: #444;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 5px;
+}
+
+.google-signup-btn:hover {
+  background-color: #f7f7f7;
+  transform: scale(1.05);
+
+}
+.google-signup-btnactive {
+    background-color: #fbfafa;
+    transform: scale(1);
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.line{
+    border-color: #fffbf7;
+    width: 75%;
+}
+
+.smallText{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color:#fffbf7;
+    margin-top: 1px;
+}
+
+
+
