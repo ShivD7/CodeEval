@@ -81,7 +81,7 @@ function ProblemPage({title, description}) {
   };
 
   return (
-    <div className="main-container">
+    <div className="page-wrapper">
       <button
         onClick={() => setCollapsed(!collapsed)}
         style={{

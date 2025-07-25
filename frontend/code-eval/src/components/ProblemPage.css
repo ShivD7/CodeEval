@@ -1,12 +1,4 @@
-/* Layout setup */
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: sans-serif;
-}
-
-.main-container {
+.page-wrapper {
   display: flex;
   height: 100vh;
   width: 100vw;
