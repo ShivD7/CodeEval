@@ -1,4 +1,4 @@
-//password for outlook acc: csclub!
+//password for outlook acc: csclub12!
 import {React, useState} from 'react'
 import './SignupPage.css'
 import { Form, Input } from 'antd';
@@ -7,6 +7,7 @@ import {doCreateUserWithEmailAndPassword, doSignInWithGoogle} from '../firebase/
 import {useAuth} from '../contexts/authContext' 
 import googleLogo from './googleLogo.jpeg'
 import { sendEmailVerification } from 'firebase/auth'
+import {auth} from "../firebase/firebase"
 const SignupPage = () => {
   const { userLoggedIn } = useAuth();
   const [email, setEmail] = useState("")
@@ -20,15 +21,13 @@ const SignupPage = () => {
         setSignUp(true);
 
         try {
-        const userCredentials = await doCreateUserWithEmailAndPassword(email, password);
-        const user = userCredentials.user;
+            const userCredentials = await doCreateUserWithEmailAndPassword(email, password);
+            const user = userCredentials.user;
 
-        console.log("User created:", user);
-
-        await sendEmailVerification(user);
-        console.log("Verification email sent");
+            alert("Verify e-mail then proceed to login!")
+            await sendEmailVerification(user);
         } catch (error) {
-        console.error("Error during sign up or verification:", error.message);
+            console.error("Error during sign up or verification:", error.message);
         }
     }
     };

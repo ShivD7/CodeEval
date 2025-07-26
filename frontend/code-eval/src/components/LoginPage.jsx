@@ -24,9 +24,9 @@ const LoginPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault()
     if (!isSigningIn){
-        user = auth.
         setIsSigningIn(true)
         await doSignInWithEmailAndPassword(email, password)
+        console.log("signed in")
     }
 
   }
