@@ -56,3 +56,27 @@ html, body, #root {
   color: #ffffff;
   font-family: 'Segoe UI', sans-serif;
 }
+
+.signout-btn {
+  background: linear-gradient(135deg, #f5f5f5, #eae0d5); 
+  color: #2a2a2a;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.signout-btn:hover {
+  background: linear-gradient(135deg, #ffffff, #f0eae2); 
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.signout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

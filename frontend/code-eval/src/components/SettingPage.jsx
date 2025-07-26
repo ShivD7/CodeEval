@@ -8,14 +8,28 @@ import {
   sidebarClasses,
   menuClasses,
 } from "react-pro-sidebar";
-import {Link} from 'react-router-dom'
+import {auth} from "../firebase/firebase"
+import { doSignOut } from "../firebase/auth";
+import {Link, Navigate} from 'react-router-dom'
+import {useAuth} from '../contexts/authContext'
 
 
 const SettingPage = () => {
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef(null);
+  const { userLoggedIn } = useAuth();
+
+  const handleSignOut = (e) => {
+    e.preventDefault()
+    console.log("hi")
+    doSignOut();
+    console.log("hi")
+
+  }
+
   return (
     <div className = "layout">
+    {!userLoggedIn && (<Navigate to={'/login'} replace = {true}/>)}
     <button
             onClick={() => setCollapsed(!collapsed)}
             style={{
@@ -86,10 +100,7 @@ const SettingPage = () => {
         <div className="submission-container no-submissions">
             
             <div className="message-card">
-            <h2>This page is under construction</h2>
-            <p>
-                Come back to see the final product. Happy coding! 🚀
-            </p>
+                <button onClick={handleSignOut} className="signout-btn">Sign Out!</button>
             </div>
         </div>
         </div>
