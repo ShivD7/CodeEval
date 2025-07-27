@@ -48,11 +48,6 @@ const SignupPage = () => {
     }
   }
 
-  const changeState = (e) => {
-    e.preventDefault()
-    setSignUp(false)
-  }
-
   const handleChangeEmail = (e) => {
     const newValue = e.target.value;
     setEmail(newValue);
@@ -111,7 +106,6 @@ const SignupPage = () => {
               
               <h5 className = "sign-up">Already have an account? Log in <Link to="/login">here</Link></h5>
           </div>
-          <button onClick={changeState}>swap</button>
       </div>
   )
 }

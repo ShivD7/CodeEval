@@ -20,12 +20,7 @@ const LoginPage = () => {
     const newValue = e.target.value;
     setPassword(newValue);
   };
-
-  const handleSwap = (e) => {
-    e.preventDefault()
-    setIsSigningIn(false)
-  }
-
+  
   const onSubmit = async (e) => {
     e.preventDefault()
     if (!isSigningIn){
@@ -40,7 +35,6 @@ const LoginPage = () => {
           setUserLoggedIn(true)
         }
     }
-    console.log(isSigningIn)
   }
 
   const onGoogleSignIn = (e) => {
@@ -103,7 +97,6 @@ const LoginPage = () => {
                 <span>Log in with Google</span>
             </button>
             <h5 className = "sign-up">Don't have an account? Sign up <Link to="/signup">here</Link></h5>
-            <button onClick = {handleSwap}>swap</button>
         </div>
     </div>
   )
