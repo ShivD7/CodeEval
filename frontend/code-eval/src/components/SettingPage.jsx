@@ -8,25 +8,31 @@ import {
   sidebarClasses,
   menuClasses,
 } from "react-pro-sidebar";
-import {auth} from "../firebase/firebase"
 import { doSignOut } from "../firebase/auth";
 import {Link, Navigate} from 'react-router-dom'
 import {useAuth} from '../contexts/authContext'
+import {auth} from "../firebase/firebase"
+import { updateProfile } from 'firebase/auth'
 
 
 const SettingPage = () => {
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef(null);
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, setUserLoggedIn } = useAuth();
 
   const handleSignOut = (e) => {
     e.preventDefault()
-    console.log("hi")
+    setUserLoggedIn(false);
     doSignOut();
-    console.log("hi")
-
   }
 
+  const handleChangePassword = () => {
+    // Your password change logic
+  };
+
+  const handlePreferences = () => {
+    // Your preferences logic
+  };
   return (
     <div className = "layout">
     {!userLoggedIn && (<Navigate to={'/login'} replace = {true}/>)}
@@ -97,12 +103,61 @@ const SettingPage = () => {
             <MenuItem component={<Link to="/settings" />}>⚙️ Settings</MenuItem>
             </Menu>
         </Sidebar>
-        <div className="submission-container no-submissions">
-            
-            <div className="message-card">
-                <button onClick={handleSignOut} className="signout-btn">Sign Out!</button>
+        <div className="setting-container">
+            {/* Profile Section */}
+            <div className="background">
+                <div className="header-container">
+                    <h3>Profile</h3>
+                </div>
+                <div className="profile-info-container">
+                    <div className="profile-info">
+                        <p>Email: {auth.currentUser.email}</p>
+                        <p>Username: {auth.currentUser.displayName}</p>
+                    </div>
+                    <div className="setting-card">
+                        <button onClick={handleSignOut} className="signout-btn">Sign Out!</button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Account & Security Section */}
+            <div className="background">
+                <div className="header-container">
+                    <h3>Account & Security</h3>
+                </div>
+                <div className="profile-info-container">
+                    <div className="profile-info">
+                        <p>Password: ••••••••</p>
+                        <p>Two-Factor Auth: Disabled</p>
+                        <p>Active Sessions: 2</p>
+                    </div>
+                    <div className="setting-card">
+                        <button onClick={handleChangePassword} className="signout-btn">Change Password</button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Preferences & Notifications Section */}
+            <div className="background">
+                <div className="header-container">
+                    <h3>Preferences & Notifications</h3>
+                </div>
+                <div className="profile-info-container">
+                    <div className="profile-info">
+                        <p>Theme: Dark Mode</p>
+                        <p>Email Notifications: Enabled</p>
+                        <p>Auto-save Drafts: On</p>
+                    </div>
+                    <div className="setting-card">
+                        <button onClick={handlePreferences} className="signout-btn">Edit Preferences</button>
+                    </div>
+                </div>
             </div>
         </div>
+
+
+
+        
         </div>
   )
 }

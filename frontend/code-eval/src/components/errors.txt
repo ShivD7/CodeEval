@@ -1,0 +1,11 @@
+auth/invalid-email: The email address provided is malformed or invalid.
+auth/wrong-password: The password provided is incorrect for the given email address.
+auth/user-not-found: There is no user record corresponding to the provided email address.
+auth/email-already-in-use: The email address provided is already associated with an existing user account.
+auth/weak-password: The password provided is not strong enough according to the configured password policy.
+auth/operation-not-allowed: The sign-in method or operation is not enabled in your Firebase project's Authentication settings.
+auth/account-exists-with-different-credential: An account with the given email already exists, but it was signed up using a different authentication method (e.g., a social provider like Google or Facebook).
+auth/popup-closed-by-user: The user closed the authentication popup (e.g., for social login) before completing the sign-in process.
+auth/too-many-requests: Too many sign-in attempts have been made from the same device, leading to a temporary block for security reasons.
+auth/invalid-credential: The supplied authentication credential (e.g., a social media token) is invalid or malformed.
+auth/user-disabled: The user's account has been disabled by an administrator.

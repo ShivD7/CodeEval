@@ -6,18 +6,18 @@ import {Link, Navigate, useNavigate} from 'react-router-dom'
 import {doCreateUserWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth';
 import {useAuth} from '../contexts/authContext' 
 import googleLogo from './googleLogo.jpeg'
-import { sendEmailVerification } from 'firebase/auth'
+import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import {auth} from "../firebase/firebase"
 const SignupPage = () => {
   const { setUserLoggedIn } = useAuth();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSignUp, setSignUp] = useState(false)
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(isSignUp);
 
     if (!isSignUp) {
         setSignUp(true);
@@ -25,14 +25,17 @@ const SignupPage = () => {
         try {
             const userCredentials = await doCreateUserWithEmailAndPassword(email, password);
             const user = userCredentials.user;
-
+            updateProfile(user, {displayName: userName})
             alert("Verify e-mail then proceed to login!")
             await sendEmailVerification(user);
             setUserLoggedIn(false); // Set state to false before redirection
             setSignUp(false);
             navigate('/login'); // Redirect to the next page
         } catch (error) {
-            console.error("Error during sign up or verification:", error.message);
+            setUserLoggedIn(false); // Set state to false before redirection
+            setSignUp(false);
+            console.log(error.message)
+            alert("Error during sign up or verification:", error.message);
         }
     }
     };
@@ -44,8 +47,15 @@ const SignupPage = () => {
         setSignUp(true)
         doSignInWithGoogle().catch(err => {
             setSignUp(false)
+            setUserLoggedIn(false)
         })
     }
+  }
+
+  const handleChangeUsername = (e) => {
+    const newValue = e.target.value;
+    setUserName(newValue);
+    console.log(userName);
   }
 
   const handleChangeEmail = (e) => {
@@ -73,6 +83,18 @@ const SignupPage = () => {
                   <Input placeholder="example123@gmail.com" 
                   value = {email}
                   onChange = {handleChangeEmail}/>
+              </Form.Item>
+              <Form.Item
+                  label={<span style={{ color: '#00ffaa'}}>Username</span>}
+                  name="username"
+                  rules={[
+                  { required: true, message: 'Please input your username!' },
+                  ]}
+                  style={{ marginBottom: 60, marginTop: 5, width: 200 }}
+              >
+                  <Input placeholder="_example123" 
+                  value = {userName}
+                  onChange = {handleChangeUsername}/>
               </Form.Item>
               <Form.Item
                   label={<span style={{ color: '#00ffaa'}}>Password</span>}

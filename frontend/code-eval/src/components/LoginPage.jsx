@@ -3,6 +3,7 @@ import './LoginPage.css'
 import { Form, Input } from 'antd';
 import {Link, Navigate} from 'react-router-dom'
 import {doSignInWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth';
+import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import {useAuth} from '../contexts/authContext'
 import googleLogo from './googleLogo.jpeg' 
 const LoginPage = () => {
@@ -23,17 +24,25 @@ const LoginPage = () => {
   
   const onSubmit = async (e) => {
     e.preventDefault()
-    if (!isSigningIn){
-        setIsSigningIn(true)
-        const userCredentials = await doSignInWithEmailAndPassword(email, password);
-        const user = userCredentials.user;
-        if (!user.emailVerified){
-          setUserLoggedIn(false)
-          setIsSigningIn(false)
-          alert("E-mail not verified!")
-        } else{
-          setUserLoggedIn(true)
-        }
+    try{
+   
+      if (!isSigningIn){
+          setIsSigningIn(true)
+          const userCredentials = await doSignInWithEmailAndPassword(email, password);
+          const user = userCredentials.user;
+          if (!user.emailVerified){
+            setUserLoggedIn(false)
+            setIsSigningIn(false)
+            alert("E-mail not verified!")
+            await sendEmailVerification(user)
+          } else{
+            setUserLoggedIn(true)
+          }
+      }
+    } catch (error) {
+      setUserLoggedIn(false)
+      setIsSigningIn(false)
+      alert("Error during sign up or verification:", error)
     }
   }
 
@@ -43,6 +52,7 @@ const LoginPage = () => {
         setIsSigningIn(true)
         doSignInWithGoogle().catch(err => {
             setIsSigningIn(false)
+            setUserLoggedIn(false)
         })
     }
   }
