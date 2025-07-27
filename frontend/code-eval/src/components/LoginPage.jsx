@@ -36,8 +36,11 @@ const LoginPage = () => {
           setUserLoggedIn(false)
           setIsSigningIn(false)
           alert("E-mail not verified!")
+        } else{
+          setUserLoggedIn(true)
         }
     }
+    console.log(isSigningIn)
   }
 
   const onGoogleSignIn = (e) => {
