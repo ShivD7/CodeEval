@@ -6,7 +6,7 @@ import {doSignInWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth
 import {useAuth} from '../contexts/authContext'
 import googleLogo from './googleLogo.jpeg' 
 const LoginPage = () => {
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, setUserLoggedIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -21,14 +21,23 @@ const LoginPage = () => {
     setPassword(newValue);
   };
 
+  const handleSwap = (e) => {
+    e.preventDefault()
+    setIsSigningIn(false)
+  }
+
   const onSubmit = async (e) => {
     e.preventDefault()
     if (!isSigningIn){
         setIsSigningIn(true)
-        await doSignInWithEmailAndPassword(email, password)
-        console.log("signed in")
+        const userCredentials = await doSignInWithEmailAndPassword(email, password);
+        const user = userCredentials.user;
+        if (!user.emailVerified){
+          setUserLoggedIn(false)
+          setIsSigningIn(false)
+          alert("E-mail not verified!")
+        }
     }
-
   }
 
   const onGoogleSignIn = (e) => {
@@ -91,6 +100,7 @@ const LoginPage = () => {
                 <span>Log in with Google</span>
             </button>
             <h5 className = "sign-up">Don't have an account? Sign up <Link to="/signup">here</Link></h5>
+            <button onClick = {handleSwap}>swap</button>
         </div>
     </div>
   )

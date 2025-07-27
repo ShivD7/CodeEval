@@ -2,17 +2,19 @@
 import {React, useState} from 'react'
 import './SignupPage.css'
 import { Form, Input } from 'antd';
-import {Link, Navigate} from 'react-router-dom'
+import {Link, Navigate, useNavigate} from 'react-router-dom'
 import {doCreateUserWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth';
 import {useAuth} from '../contexts/authContext' 
 import googleLogo from './googleLogo.jpeg'
 import { sendEmailVerification } from 'firebase/auth'
 import {auth} from "../firebase/firebase"
 const SignupPage = () => {
-  const { userLoggedIn } = useAuth();
+  const { setUserLoggedIn } = useAuth();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSignUp, setSignUp] = useState(false)
+  const navigate = useNavigate();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log(isSignUp);
@@ -26,6 +28,9 @@ const SignupPage = () => {
 
             alert("Verify e-mail then proceed to login!")
             await sendEmailVerification(user);
+            setUserLoggedIn(false); // Set state to false before redirection
+            setSignUp(false);
+            navigate('/login'); // Redirect to the next page
         } catch (error) {
             console.error("Error during sign up or verification:", error.message);
         }
@@ -58,7 +63,6 @@ const SignupPage = () => {
   }
   return (
       <div className = "signup-container">
-          {userLoggedIn && (<Navigate to={'/login'} replace = {true}/>)}
           <div className = "signup-input-box">
               <h1 className = "signup-title">Sign-Up</h1>
               <Form layout="vertical">
@@ -107,6 +111,7 @@ const SignupPage = () => {
               
               <h5 className = "sign-up">Already have an account? Log in <Link to="/login">here</Link></h5>
           </div>
+          <button onClick={changeState}>swap</button>
       </div>
   )
 }
