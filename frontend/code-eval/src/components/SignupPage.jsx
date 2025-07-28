@@ -1,5 +1,5 @@
 //password for outlook acc: csclub12!
-import {React, useState} from 'react'
+import {React, useState, useContext} from 'react'
 import './SignupPage.css'
 import { Form, Input } from 'antd';
 import {Link, Navigate, useNavigate} from 'react-router-dom'
@@ -8,6 +8,7 @@ import {useAuth} from '../contexts/authContext'
 import googleLogo from './googleLogo.jpeg'
 import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import {auth} from "../firebase/firebase"
+import Context from './Context.jsx'
 const SignupPage = () => {
   const { setUserLoggedIn } = useAuth();
   const [email, setEmail] = useState("")
@@ -62,7 +63,7 @@ const SignupPage = () => {
     const newValue = e.target.value;
     setEmail(newValue);
   }
-  const handleChangePassword = (e) => {
+  const handlePassword = (e) => {
     const newValue = e.target.value;
     setPassword(newValue);
   }
@@ -108,7 +109,7 @@ const SignupPage = () => {
               >
                   <Input.Password placeholder=""
                   value = {password}
-                  onChange = {handleChangePassword} />
+                  onChange = {handlePassword} />
               </Form.Item>
               </Form>
               <button className = "sign-up-button" onClick={onSubmit}>

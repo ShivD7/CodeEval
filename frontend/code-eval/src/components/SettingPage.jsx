@@ -1,5 +1,5 @@
 import "./SettingPage.css";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import {
   Sidebar,
   Menu,
@@ -12,13 +12,15 @@ import { doSignOut } from "../firebase/auth";
 import {Link, Navigate} from 'react-router-dom'
 import {useAuth} from '../contexts/authContext'
 import {auth} from "../firebase/firebase"
-import { updateProfile } from 'firebase/auth'
+import { updateProfile, updatePassword } from 'firebase/auth'
+import Context from './Context.jsx'
 
 
 const SettingPage = () => {
   const [collapsed, setCollapsed] = useState(false);
   const sidebarRef = useRef(null);
   const { userLoggedIn, setUserLoggedIn } = useAuth();
+  const [displayPassword, setDisplayPassword] = useState("");
 
   const handleSignOut = (e) => {
     e.preventDefault()
@@ -27,7 +29,18 @@ const SettingPage = () => {
   }
 
   const handleChangePassword = () => {
-    // Your password change logic
+    const newPass = prompt("What will your new password be?")
+    const confirmNewPass = prompt("Please confirm your new password!")
+    try{
+        if (newPass === confirmNewPass){
+            updatePassword(auth.currentUser, newPass)
+            alert("Password updated!")
+        } else{
+            alert("You have not entered the same passwords!")
+        }
+    } catch (error) {
+        alert(error.message)
+    }
   };
 
   const handlePreferences = () => {
@@ -126,30 +139,8 @@ const SettingPage = () => {
                     <h3>Account & Security</h3>
                 </div>
                 <div className="profile-info-container">
-                    <div className="profile-info">
-                        <p>Password: ••••••••</p>
-                        <p>Two-Factor Auth: Disabled</p>
-                        <p>Active Sessions: 2</p>
-                    </div>
-                    <div className="setting-card">
+                    <div className="change-pass">
                         <button onClick={handleChangePassword} className="signout-btn">Change Password</button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Preferences & Notifications Section */}
-            <div className="background">
-                <div className="header-container">
-                    <h3>Preferences & Notifications</h3>
-                </div>
-                <div className="profile-info-container">
-                    <div className="profile-info">
-                        <p>Theme: Dark Mode</p>
-                        <p>Email Notifications: Enabled</p>
-                        <p>Auto-save Drafts: On</p>
-                    </div>
-                    <div className="setting-card">
-                        <button onClick={handlePreferences} className="signout-btn">Edit Preferences</button>
                     </div>
                 </div>
             </div>

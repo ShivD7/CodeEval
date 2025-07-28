@@ -6,12 +6,12 @@ import {doSignInWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth
 import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import {useAuth} from '../contexts/authContext'
 import googleLogo from './googleLogo.jpeg' 
+
 const LoginPage = () => {
   const { userLoggedIn, setUserLoggedIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
-
   const handleChangeEmail = (e) => {
     const newValue = e.target.value;
     setEmail(newValue);
@@ -25,7 +25,6 @@ const LoginPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault()
     try{
-   
       if (!isSigningIn){
           setIsSigningIn(true)
           const userCredentials = await doSignInWithEmailAndPassword(email, password);

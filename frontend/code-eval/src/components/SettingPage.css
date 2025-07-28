@@ -22,9 +22,9 @@ html, body, #root {
   align-items: center; /* Center content horizontally */
   height: 100vh; /* Use full viewport height for better centering */
   background: linear-gradient(145deg, #1a1a1a, #2a2a2a); /* Match your original gradient */
-  padding: 20px 40px 40px 40px; /* Increased top padding to move content down from very top */
+  padding: 100px 40px 40px 40px; /* Increased top padding to move content down from very top */
   box-sizing: border-box;
-  gap: 20px;
+  gap: 100px;
 }
 
 .header-container {
@@ -46,6 +46,13 @@ html, body, #root {
 .background:hover {
   background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
   transform: scale(1.015);
+}
+
+.change-pass{
+  display: flex;
+  justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  width: 100%;   
 }
 
 .setting-container h3 {

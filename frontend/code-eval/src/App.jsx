@@ -12,7 +12,8 @@ import LoginPage from './components/LoginPage.jsx'
 import SignupPage from './components/SignupPage.jsx'
 function App() {
   const userInfo = {
-    submissions: []
+    submissions: [],
+    password: ""
   }
 
   return (
