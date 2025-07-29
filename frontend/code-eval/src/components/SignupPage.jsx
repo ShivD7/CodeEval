@@ -35,8 +35,8 @@ const SignupPage = () => {
         } catch (error) {
             setUserLoggedIn(false); // Set state to false before redirection
             setSignUp(false);
-            console.log(error.message)
-            alert("Error during sign up or verification:", error.message);
+
+            alert("Error during sign up or verification: " + error.message);
         }
     }
     };
@@ -44,12 +44,19 @@ const SignupPage = () => {
 
   const onGoogleSignIn = (e) => {
     e.preventDefault()
-    if (!isSignUp){
-        setSignUp(true)
-        doSignInWithGoogle().catch(err => {
-            setSignUp(false)
-            setUserLoggedIn(false)
-        })
+    try{
+        console.log(isSignUp)
+        if (!isSignUp){
+            setSignUp(true)
+            doSignInWithGoogle()
+            setUserLoggedIn(false); // Set state to false before redirection
+            setSignUp(false);
+            navigate('/login'); // Redirect to the next page
+        }
+    } catch (error){
+        setSignUp(false)
+        setUserLoggedIn(false)
+        alert("Error during sign up: " + error.message)
     }
   }
 
@@ -79,7 +86,7 @@ const SignupPage = () => {
                   { required: true, message: 'Please input your e-mail!' },
                   ]}
                   help={<span style={{ color: '#00ffaa'}}>Please enter a valid e-mail!</span>}
-                  style={{ marginBottom: 60, marginTop: 5, width: 200 }}
+                  style={{ marginBottom: 30, marginTop: 5, width: 200 }}
               >
                   <Input placeholder="example123@gmail.com" 
                   value = {email}
@@ -91,7 +98,7 @@ const SignupPage = () => {
                   rules={[
                   { required: true, message: 'Please input your username!' },
                   ]}
-                  style={{ marginBottom: 60, marginTop: 5, width: 200 }}
+                  style={{ marginBottom: 30, marginTop: 5, width: 200 }}
               >
                   <Input placeholder="_example123" 
                   value = {userName}
@@ -105,7 +112,7 @@ const SignupPage = () => {
                   { min: 8, max: 20, message: 'Must be 8–20 characters long.' }
                   ]}
                   help={<span style={{ color: '#00ffaa'}}>Must be 8–20 characters long.</span>}
-                  style={{ marginBottom: 50, width: 200 }}
+                  style={{ marginBottom: 30, width: 200 }}
               >
                   <Input.Password placeholder=""
                   value = {password}

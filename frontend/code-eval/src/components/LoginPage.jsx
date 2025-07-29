@@ -1,7 +1,7 @@
 import {React, useState} from 'react'
 import './LoginPage.css'
 import { Form, Input } from 'antd';
-import {Link, Navigate} from 'react-router-dom'
+import {Link, Navigate, useNavigate} from 'react-router-dom'
 import {doSignInWithEmailAndPassword, doSignInWithGoogle} from '../firebase/auth';
 import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import {useAuth} from '../contexts/authContext'
@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const navigate = useNavigate();
   const handleChangeEmail = (e) => {
     const newValue = e.target.value;
     setEmail(newValue);
@@ -41,7 +42,7 @@ const LoginPage = () => {
     } catch (error) {
       setUserLoggedIn(false)
       setIsSigningIn(false)
-      alert("Error during sign up or verification:", error)
+      alert("Error during sign up or verification: " + error)
     }
   }
 
@@ -49,6 +50,7 @@ const LoginPage = () => {
     e.preventDefault()
     if (!isSigningIn){
         setIsSigningIn(true)
+        navigate('/login'); // Redirect to the next page
         doSignInWithGoogle().catch(err => {
             setIsSigningIn(false)
             setUserLoggedIn(false)

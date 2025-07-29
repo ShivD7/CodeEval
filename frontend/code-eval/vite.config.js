@@ -8,5 +8,11 @@ export default defineConfig({
   server: {
     open: true,
     port: 3000,
+    configureServer: (server) => {
+      server.middlewares.use((req, res, next) => {
+        res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
+        next();
+      });
+    }
   }
 })
