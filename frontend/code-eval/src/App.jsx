@@ -25,7 +25,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/pow1" element={<ProblemPage
                                         title = "Two Sum"
-                                        description = "HI"
+                                        description = "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order."
                                         input1 = {"2 7 11 15\n9"}
                                         input2 = {"3 2 4\n6"}
                                         input3 = {"3 3\n6"}
