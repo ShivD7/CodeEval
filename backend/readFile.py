@@ -4,15 +4,13 @@ def read_file(path):
     lines = file.readlines()
     testCases = []
     testCase = []
-    counter = 0
     for line in lines:
-        if counter % 2 == 0 and counter != 0:
+        if ("newtestcase" in line):
             testCases.append(testCase)
             testCase = []
-        line = line.replace("\\n","\n")
-        testCase.append(line)
-        counter += 1
-    testCases.append(testCase)
+        else:
+            line = line.replace("\\n","\n")
+            testCase.append(line)
     file.close()
     return testCases
 

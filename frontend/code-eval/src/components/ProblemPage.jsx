@@ -12,7 +12,7 @@ import './ProblemPage.css';
 import { Link, useLocation } from "react-router-dom";
 import Context from './Context.jsx'
 
-function ProblemPage({title, description}) {
+function ProblemPage({title, description, input1, input2, input3, output1, output2, output3, ex1, ex2, ex3}) {
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
   const [showOutput, setShowOutput] = useState(false);
@@ -23,11 +23,16 @@ function ProblemPage({title, description}) {
   const [code, setCode] = useState("// Write your code here");
   const location = useLocation();
   const userData = useContext(Context);
+  const renderMultilineText = (text) => {
+    return text.split('\n').map((line, idx) => (
+      <span key={idx}>{line}<br /></span>
+    ));
+  };
+
   const handleRun = async () => {
     setShowOutput(true);
     const submissionArr = userData.submissions;
     const currentpath = location.pathname;
-    console.log(code);
     try {
       const response = await fetch("http://localhost:3001/execute", {
         method: "POST",
@@ -45,8 +50,7 @@ function ProblemPage({title, description}) {
       setOutput(data.output);  // assuming backend responds with { output: "..." }
       submissionArr.push([code, title, data.output]);
     } catch (error) {
-      console.error("Error sending code:", error);
-      setOutput("Failed to execute code.");
+      setOutput("Failed to execute code.\n" + error);
     }
   };
 
@@ -154,6 +158,57 @@ function ProblemPage({title, description}) {
       <div className="left-panel">
         <h2>{title}</h2>
         <p>{description}</p>
+        <div className="example-boxes">
+          <div className="example">
+            <h4>Example 1:</h4>
+            <div className="example-content">
+              <strong>Input:</strong>
+              <pre>{input1}</pre>
+            </div>
+            <div className="example-content">
+              <strong>Output:</strong>
+              <pre>{output1}</pre>
+            </div>
+            <div className="example-content">
+              <strong>Explanation:</strong>
+              <pre>{ex1}</pre>
+            </div>
+          </div>
+
+          <div className="example">
+            <h4>Example 2:</h4>
+            <div className="example-content">
+              <strong>Input:</strong>
+              <pre>{input2}</pre>
+            </div>
+            <div className="example-content">
+              <strong>Output:</strong>
+              <pre>{output2}</pre>
+            </div>
+            <div className="example-content">
+              <strong>Explanation:</strong>
+              <pre>{ex2}</pre>
+            </div>
+          </div>
+
+          <div className="example">
+            <h4>Example 3:</h4>
+            <div className="example-content">
+              <strong>Input:</strong>
+              <pre>{input3}</pre>
+            </div>
+            <div className="example-content">
+              <strong>Output:</strong>
+              <pre>{output3}</pre>
+            </div>
+            <div className="example-content">
+              <strong>Explanation:</strong>
+              <pre>{ex3}</pre>
+            </div>
+
+          </div>
+        </div>
+
       </div>
 
       <div className="right-panel">

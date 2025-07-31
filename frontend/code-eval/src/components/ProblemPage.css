@@ -11,7 +11,7 @@
   overflow-y: auto;
   box-sizing: border-box;
   margin-left: 0px;
-  padding-left: 0%;
+  padding-left: 2rem;
 }
 
 .right-panel {
@@ -160,4 +160,55 @@
   font-size: 1.2rem;
   cursor: pointer;
 }
+
+.example-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.example {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-left: 2rem;
+  box-shadow: 0 0 6px rgba(0, 255, 170, 0.2);
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #ddd;
+}
+
+.example h4 {
+  margin: 0 0 0.5rem 0;
+  color: #00ffaa;
+}
+.example {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 6px rgba(0, 255, 170, 0.15);
+}
+
+.example h4 {
+  color: #00ffaa;
+  margin-bottom: 0.5rem;
+}
+
+.example-content {
+  margin-bottom: 0.5rem;
+}
+
+.example-content pre {
+  background-color: #121212;
+  padding: 0.5rem;
+  border-radius: 4px;
+  color: #ddd;
+  white-space: pre-wrap;
+  font-family: monospace;
+  margin: 0.25rem 0 0 0;
+}
+
+
 

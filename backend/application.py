@@ -64,6 +64,7 @@ def getToken(sourceCode, language, stdin, expected_output):
     }
 
     response = requests.post(url, json=payload, headers=headers, params=querystring)
+    print(response)
     return response.json()['token']
 
 def getOutput(token):
@@ -86,7 +87,6 @@ def execute_code():
     code = data.get('code', '')
     language = data.get('language', '')
     path = data.get('path', '')
-    print(f"Received code:\n{code}\nLanguage: {language}.\nPath: {path}")
     # For now, just return a dummy output
     testCases = readFile.read_file(path)
     testcaseCount = 1

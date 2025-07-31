@@ -45,7 +45,6 @@ const SignupPage = () => {
   const onGoogleSignIn = (e) => {
     e.preventDefault()
     try{
-        console.log(isSignUp)
         if (!isSignUp){
             setSignUp(true)
             doSignInWithGoogle()
@@ -63,7 +62,6 @@ const SignupPage = () => {
   const handleChangeUsername = (e) => {
     const newValue = e.target.value;
     setUserName(newValue);
-    console.log(userName);
   }
 
   const handleChangeEmail = (e) => {
