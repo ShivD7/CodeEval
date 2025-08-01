@@ -65,6 +65,9 @@ def getToken(sourceCode, language, stdin, expected_output):
 
     response = requests.post(url, json=payload, headers=headers, params=querystring)
     print(response)
+    if response.status_code != 201:
+        print("Error:", response.status_code, response.text)
+        raise Exception(f"Judge0 Error {response.status_code}: {response.text}")
     return response.json()['token']
 
 def getOutput(token):

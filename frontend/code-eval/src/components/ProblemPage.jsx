@@ -34,7 +34,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
     const submissionArr = userData.submissions;
     const currentpath = location.pathname;
     try {
-      const response = await fetch("http://localhost:3001/execute", {
+      const response = await fetch("https://codeeval-mish.onrender.com/execute", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
