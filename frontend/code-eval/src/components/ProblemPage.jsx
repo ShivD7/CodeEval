@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import {
   Sidebar,
   Menu,
@@ -21,16 +21,22 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
   const [collapsed, setCollapsed] = useState(true);
   const sidebarRef = useRef(null);
   const [code, setCode] = useState("// Write your code here");
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const userData = useContext(Context);
-  const renderMultilineText = (text) => {
-    return text.split('\n').map((line, idx) => (
-      <span key={idx}>{line}<br /></span>
-    ));
-  };
+  
+  useEffect(() => {
+    setCode("//Write your code here");
+  }, []);
+
+
 
   const handleRun = async () => {
     setShowOutput(true);
+    setLoading(true);
+    if (loading){
+      setOutput("Loading...")
+    }
     const submissionArr = userData.submissions;
     const currentpath = location.pathname;
     try {
@@ -47,6 +53,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
       });
 
       const data = await response.json();
+      setLoading(false);
       setOutput(data.output);  // assuming backend responds with { output: "..." }
       submissionArr.push([code, title, data.output]);
     } catch (error) {
@@ -231,7 +238,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
             height="100%"
             width="100%"
             language={language}
-            defaultValue="#Write your code here"
+            defaultValue="//Write your code here"
             theme="vs-dark"
             value = {code}
             onChange={(value) => setCode(value ?? "")}
