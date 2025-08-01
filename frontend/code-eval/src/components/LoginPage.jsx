@@ -61,7 +61,7 @@ const LoginPage = () => {
     <div className = "main-container">
         {userLoggedIn && (<Navigate to={'/home'} replace = {true}/>)}
         <div className = "input-box">
-            <h1 className = "main-title">Log-in</h1>
+            <h1 className = "main-title">Log-in</h1> 
             <Form layout="vertical">
             <Form.Item
                 label={<span style={{ color: '#00ffaa'}}>E-mail Address</span>}

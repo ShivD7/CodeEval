@@ -12,7 +12,7 @@ import {Link} from 'react-router-dom'
 
 
 function Home() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const sidebarRef = useRef();
 
   return (

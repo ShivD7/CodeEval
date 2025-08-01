@@ -210,12 +210,12 @@
   margin: 0.25rem 0 0 0;
 }
 
-@media (max-width: 768px) {
-    .panel-wrapper{
-      display: flex;
-      
-    }
+.title{
+  color: #121212;
+}
 
+.description{
+  color: #121212;
 }
 
 

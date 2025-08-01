@@ -17,7 +17,7 @@ import Context from './Context.jsx'
 
 
 const SettingPage = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const sidebarRef = useRef(null);
   const { userLoggedIn, setUserLoggedIn } = useAuth();
   const [displayPassword, setDisplayPassword] = useState("");

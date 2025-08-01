@@ -14,7 +14,7 @@ import Context from './Context.jsx'
 
 
 const SubmissionPage = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const sidebarRef = useRef();
   const userData = useContext(Context);
   const submissionArr = userData.submissions;

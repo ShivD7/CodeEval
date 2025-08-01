@@ -18,7 +18,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
   const [showOutput, setShowOutput] = useState(false);
   const [outputHeight, setOutputHeight] = useState(200);
   const resizing = useRef(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const sidebarRef = useRef(null);
   const [code, setCode] = useState("// Write your code here");
   const location = useLocation();
@@ -154,10 +154,9 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
           <MenuItem component={<Link to="/settings" />}>⚙️ Settings</MenuItem>
         </Menu>
       </Sidebar>
-      <div className = "panel-wrapper">
       <div className="left-panel">
-        <h2>{title}</h2>
-        <p>{description}</p>
+        <h2 className = "title">{title}</h2>
+        <p className = "description">{description}</p>
         <div className="example-boxes">
           <div className="example">
             <h4>Example 1:</h4>
@@ -261,7 +260,6 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
         </div>
       </div>
       </div>
-    </div>
   );
 }
 
