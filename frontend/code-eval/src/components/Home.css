@@ -31,3 +31,80 @@
   font-size: 1.25rem;
   line-height: 2rem;
 }
+.button.collapsed {
+  position: fixed;
+  top: 20px;
+  left: 60px;   /* For collapsed state */
+  z-index: 1100;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: left 0.3s ease; /* Smooth transition */
+}
+
+.button.expanded {
+  position: fixed;
+  top: 20px;
+  left: 250px; /* For expanded state */
+  z-index: 1100;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: left 0.3s ease; /* Smooth transition */
+}
+
+@media (max-width: 768px) {
+  .home-layout{
+    height: 100vh;
+    width: 100vw;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .home-content {
+    font-size: small;
+    min-height: auto; /* let it grow naturally */
+    max-height: fit-content;
+    overflow: auto;
+    font-size: smaller;
+    gap:0px;
+  }
+  .sidebar.collapsed {
+    width: 60px;
+    /* other styles when collapsed */
+  }
+
+  .sidebar.expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    /* styles when expanded */
+  }
+
+  
+  .home-content p{
+    font-size: small;
+  }
+  
+  .home-content h1{
+    padding-top: 3rem;
+    font-size: 23px;
+  }
+  .button.collapsed {
+    left: 60px;  /* Keeps it at the collapsed position */
+  }
+
+  .button.expanded {
+    left: 100%; /* Move to the right edge */
+    transform: translateX(-100%); /* Fix for smaller screens */
+  }
+
+}

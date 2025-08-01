@@ -154,7 +154,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
           <MenuItem component={<Link to="/settings" />}>⚙️ Settings</MenuItem>
         </Menu>
       </Sidebar>
-
+      <div className = "panel-wrapper">
       <div className="left-panel">
         <h2>{title}</h2>
         <p>{description}</p>
@@ -259,6 +259,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

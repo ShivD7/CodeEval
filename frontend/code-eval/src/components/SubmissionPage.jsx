@@ -18,29 +18,19 @@ const SubmissionPage = () => {
   const sidebarRef = useRef();
   const userData = useContext(Context);
   const submissionArr = userData.submissions;
-  if (submissionArr.length ===0){
+  if (submissionArr.length === 0){
     return(
     <div className = "layout">
-<button
+      <button
         onClick={() => setCollapsed(!collapsed)}
-        style={{
-          position: "absolute",
-          top: 20,
-          left: collapsed ? 60 : 246,
-          zIndex: 1000,
-          backgroundColor: "#222",
-          color: "#fff",
-          border: "none",
-          borderRadius: "6px",
-          padding: "0.5rem 1rem",
-          cursor: "pointer",
-          transition: "left 0.3s ease",
-        }}
+        className={`button ${collapsed ? 'collapsed' : 'expanded'}`}
       >
         {collapsed ? "☰" : "✖"}
       </button>
 
+
       <Sidebar
+      className={`sidebar ${collapsed ? 'collapsed' : 'expanded'}`}
         collapsed={collapsed}
         ref={sidebarRef}
         width="246px"

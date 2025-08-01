@@ -56,3 +56,86 @@ html, body, #root {
   color: #ffffff;
   font-family: 'Segoe UI', sans-serif;
 }
+
+.button.collapsed {
+  position: fixed;
+  top: 20px;
+  left: 60px;   /* For collapsed state */
+  z-index: 1100;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: left 0.3s ease; /* Smooth transition */
+}
+
+.button.expanded {
+  position: fixed;
+  top: 20px;
+  left: 250px; /* For expanded state */
+  z-index: 1100;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: left 0.3s ease; /* Smooth transition */
+}
+
+@media (max-width: 768px) {
+  .button.collapsed {
+    left: 60px;  /* Keeps it at the collapsed position */
+  }
+
+  .button.expanded {
+    left: 100%; /* Move to the right edge */
+    transform: translateX(-100%); /* Fix for smaller screens */
+  }
+
+  .sidebar.collapsed {
+    width: 60px;
+    /* other styles when collapsed */
+  }
+
+  .sidebar.expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    /* styles when expanded */
+  }
+
+.submission-container.no-submissions {
+  flex: 2; /* take up remaining space next to the sidebar */
+  display: flex;
+  justify-content: center; /* center content horizontally in remaining space */
+  align-items: center;
+  height: 70vh;
+  background: linear-gradient(135deg, #1a1a1a, #232323);
+  box-sizing: border-box;
+  padding-top: 20px;
+  margin-top: 80px;
+  overflow-y: auto;
+
+}
+
+.message-card{
+  width: fit-content;
+  padding: 10px;
+  padding-top: 20px;
+  
+}
+
+.message-card p{
+  font-size: x-small;
+}
+
+.message-card h2{
+  font-size: smaller;
+}
+  
+}

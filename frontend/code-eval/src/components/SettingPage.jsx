@@ -49,27 +49,16 @@ const SettingPage = () => {
   return (
     <div className = "layout">
     {!userLoggedIn && (<Navigate to={'/login'} replace = {true}/>)}
-    <button
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-            position: "absolute",
-            top: 20,
-            left: collapsed ? 60 : 246,
-            zIndex: 1000,
-            backgroundColor: "#222",
-            color: "#fff",
-            border: "none",
-            borderRadius: "6px",
-            padding: "0.5rem 1rem",
-            cursor: "pointer",
-            transition: "left 0.3s ease",
-            }}
-        >
-            {collapsed ? "☰" : "✖"}
-        </button>
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className={`button ${collapsed ? 'collapsed' : 'expanded'}`}
+      >
+        {collapsed ? "☰" : "✖"}
+      </button>
 
         <Sidebar
             collapsed={collapsed}
+            className={`sidebar ${collapsed ? 'collapsed' : 'expanded'}`}
             ref={sidebarRef}
             width="246px"
             collapsedWidth="60px"

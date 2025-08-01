@@ -105,5 +105,12 @@
     margin-top: 1px;
 }
 
+@media (max-width: 768px) {
+  .main-container{
+    width:fit-content;
+    height: fit-content;
+  }
+}
+
 
 
