@@ -12,7 +12,7 @@ import './ProblemPage.css';
 import { Link, useLocation } from "react-router-dom";
 import Context from './Context.jsx'
 
-function ProblemPage({title, description, input1, input2, input3, output1, output2, output3, ex1, ex2, ex3}) {
+function ProblemPage({ title, description, input1, input2, input3, output1, output2, output3, ex1, ex2, ex3 }) {
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
   const [showOutput, setShowOutput] = useState(false);
@@ -24,7 +24,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const userData = useContext(Context);
-  
+
   useEffect(() => {
     setCode("//Write your code here");
   }, []);
@@ -34,7 +34,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
   const handleRun = async () => {
     setShowOutput(true);
     setLoading(true);
-    if (loading){
+    if (loading) {
       setOutput("Loading...")
     }
     const submissionArr = userData.submissions;
@@ -162,8 +162,8 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
         </Menu>
       </Sidebar>
       <div className="left-panel">
-        <h2 className = "title">{title}</h2>
-        <p className = "description">{description}</p>
+        <h2 className="title">{title}</h2>
+        <p className="description">{description}</p>
         <div className="example-boxes">
           <div className="example">
             <h4>Example 1:</h4>
@@ -240,9 +240,9 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
             language={language}
             defaultValue="//Write your code here"
             theme="vs-dark"
-            value = {code}
+            value={code}
             onChange={(value) => setCode(value ?? "")}
-            
+
           />
 
           {showOutput && (
@@ -266,7 +266,7 @@ function ProblemPage({title, description, input1, input2, input3, output1, outpu
           )}
         </div>
       </div>
-      </div>
+    </div>
   );
 }
 

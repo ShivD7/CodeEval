@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -9,31 +11,31 @@ html, body, #root {
   display: flex;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #1a1a1a, #232323); 
+  background: linear-gradient(135deg, #1a1a1a, #232323);
   color: #ffffff;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .setting-container {
-  flex: 2; /* take up remaining space next to the sidebar */
+  flex: 2;
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  justify-content: flex-start; /* Position content towards the top */
-  align-items: center; /* Center content horizontally */
-  height: 100vh; /* Use full viewport height for better centering */
-  background: linear-gradient(145deg, #1a1a1a, #2a2a2a); /* Match your original gradient */
-  padding: 100px 40px 40px 40px; /* Increased top padding to move content down from very top */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+  padding: 100px 40px 40px 40px;
   box-sizing: border-box;
   gap: 100px;
 }
 
 .header-container {
   width: 100%;
-  text-align: center; /* Center align header */
+  text-align: center;
   margin-bottom: 20px;
 }
 
-.background{
+.background {
   background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
   width: 500px;
   padding: 50px;
@@ -48,40 +50,45 @@ html, body, #root {
   transform: scale(1.015);
 }
 
-.change-pass{
+.change-pass {
   display: flex;
-  justify-content: center;  /* Center horizontally */
-  align-items: center;      /* Center vertically */
-  width: 100%;   
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .setting-container h3 {
   color: #e6e6e6;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 24px;
-  margin: 0; /* Remove default margin since we're using margin-bottom on container */
+  margin: 0;
+  /* Remove default margin since we're using margin-bottom on container */
 }
 
 .profile-info-container {
   display: flex;
-  justify-content: space-between; /* Left and right alignment */
-  align-items: center; /* Vertically center the content */
+  justify-content: space-between;
+  /* Left and right alignment */
+  align-items: center;
+  /* Vertically center the content */
   width: 100%;
-  gap: 20px; /* Add some gap between left and right sections */
+  gap: 20px;
+  /* Add some gap between left and right sections */
 }
 
 .profile-info {
   color: #e6e6e6;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
-  flex-direction: column; /* Stack email and username vertically */
-  gap: 10px; /* Space between the items */
-  flex: 1; /* Take available space on the left */
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
 }
+
 .button.collapsed {
   position: fixed;
   top: 20px;
-  left: 60px;   /* For collapsed state */
+  left: 60px;
   z-index: 1100;
   background-color: #222;
   color: #fff;
@@ -89,13 +96,13 @@ html, body, #root {
   border-radius: 6px;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: left 0.3s ease; /* Smooth transition */
+  transition: left 0.3s ease;
 }
 
 .button.expanded {
   position: fixed;
   top: 20px;
-  left: 250px; /* For expanded state */
+  left: 250px;
   z-index: 1100;
   background-color: #222;
   color: #fff;
@@ -103,19 +110,19 @@ html, body, #root {
   border-radius: 6px;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: left 0.3s ease; /* Smooth transition */
+  transition: left 0.3s ease;
 }
 
 .profile-info p {
-  margin: 0; /* Remove default paragraph margins for cleaner spacing */
+  margin: 0;
   font-size: 16px;
   line-height: 1.4;
 }
 
 .setting-card {
   display: flex;
-  justify-content: flex-end; /* Align button to the right */
-  flex-shrink: 0; /* Prevent shrinking */
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 .signout-btn {
@@ -148,18 +155,18 @@ html, body, #root {
     padding: 20px;
     margin-top: 50px
   }
+
   .button.collapsed {
-    left: 60px;  /* Keeps it at the collapsed position */
+    left: 60px;
   }
 
   .button.expanded {
-    left: 100%; /* Move to the right edge */
-    transform: translateX(-100%); /* Fix for smaller screens */
+    left: 100%;
+    transform: translateX(-100%);
   }
 
   .sidebar.collapsed {
     width: 60px;
-    /* other styles when collapsed */
   }
 
   .sidebar.expanded {
@@ -168,14 +175,13 @@ html, body, #root {
     left: 0;
     height: 100vh;
     width: 100vw;
-    /* styles when expanded */
   }
-  
+
   .setting-container {
     padding: 20px;
   }
 
-  .signout-btn{
+  .signout-btn {
     font-size: smaller;
     width: 100px;
     text-align: center;

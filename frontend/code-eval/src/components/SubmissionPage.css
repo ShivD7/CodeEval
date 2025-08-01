@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -6,9 +8,11 @@ html, body, #root {
 }
 
 .submission-container.no-submissions {
-  flex: 2; /* take up remaining space next to the sidebar */
+  flex: 2;
+  /* take up remaining space next to the sidebar */
   display: flex;
-  justify-content: center; /* center content horizontally in remaining space */
+  justify-content: center;
+  /* center content horizontally in remaining space */
   align-items: center;
   height: 50vh;
   background: linear-gradient(135deg, #1a1a1a, #232323);
@@ -16,11 +20,12 @@ html, body, #root {
   padding: 40px;
   box-sizing: border-box;
   margin-top: 10%;
-  margin-right:23%
+  margin-right: 23%
 }
 
 .message-card {
-  background: linear-gradient(145deg, #1a1a1a, #2a2a2a); /* Very close to base with depth */
+  background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+  /* Very close to base with depth */
   border-radius: 16px;
   padding: 30px;
   text-align: center;
@@ -52,7 +57,7 @@ html, body, #root {
   display: flex;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #1a1a1a, #232323); 
+  background: linear-gradient(135deg, #1a1a1a, #232323);
   color: #ffffff;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -60,7 +65,8 @@ html, body, #root {
 .button.collapsed {
   position: fixed;
   top: 20px;
-  left: 60px;   /* For collapsed state */
+  left: 60px;
+  /* For collapsed state */
   z-index: 1100;
   background-color: #222;
   color: #fff;
@@ -68,13 +74,15 @@ html, body, #root {
   border-radius: 6px;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: left 0.3s ease; /* Smooth transition */
+  transition: left 0.3s ease;
+  /* Smooth transition */
 }
 
 .button.expanded {
   position: fixed;
   top: 20px;
-  left: 250px; /* For expanded state */
+  left: 250px;
+  /* For expanded state */
   z-index: 1100;
   background-color: #222;
   color: #fff;
@@ -82,17 +90,21 @@ html, body, #root {
   border-radius: 6px;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: left 0.3s ease; /* Smooth transition */
+  transition: left 0.3s ease;
+  /* Smooth transition */
 }
 
 @media (max-width: 768px) {
   .button.collapsed {
-    left: 60px;  /* Keeps it at the collapsed position */
+    left: 60px;
+    /* Keeps it at the collapsed position */
   }
 
   .button.expanded {
-    left: 100%; /* Move to the right edge */
-    transform: translateX(-100%); /* Fix for smaller screens */
+    left: 100%;
+    /* Move to the right edge */
+    transform: translateX(-100%);
+    /* Fix for smaller screens */
   }
 
   .sidebar.collapsed {
@@ -109,33 +121,35 @@ html, body, #root {
     /* styles when expanded */
   }
 
-.submission-container.no-submissions {
-  flex: 2; /* take up remaining space next to the sidebar */
-  display: flex;
-  justify-content: center; /* center content horizontally in remaining space */
-  align-items: center;
-  height: 70vh;
-  background: linear-gradient(135deg, #1a1a1a, #232323);
-  box-sizing: border-box;
-  padding-top: 20px;
-  margin-top: 80px;
-  overflow-y: auto;
+  .submission-container.no-submissions {
+    flex: 2;
+    /* take up remaining space next to the sidebar */
+    display: flex;
+    justify-content: center;
+    /* center content horizontally in remaining space */
+    align-items: center;
+    height: 70vh;
+    background: linear-gradient(135deg, #1a1a1a, #232323);
+    box-sizing: border-box;
+    padding-top: 20px;
+    margin-top: 80px;
+    overflow-y: auto;
 
-}
+  }
 
-.message-card{
-  width: fit-content;
-  padding: 10px;
-  padding-top: 20px;
-  
-}
+  .message-card {
+    width: fit-content;
+    padding: 10px;
+    padding-top: 20px;
 
-.message-card p{
-  font-size: x-small;
-}
+  }
 
-.message-card h2{
-  font-size: smaller;
-}
-  
+  .message-card p {
+    font-size: x-small;
+  }
+
+  .message-card h2 {
+    font-size: smaller;
+  }
+
 }
