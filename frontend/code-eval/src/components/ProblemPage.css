@@ -167,17 +167,8 @@
   flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
-  overflow: auto;
 }
 
-.example h4 {
-  overflow: auto;
-}
-
-
-strong {
-  overflow: auto;
-}
 
 .example {
   background-color: #1e1e1e;
@@ -188,6 +179,7 @@ strong {
   font-family: monospace;
   font-size: 0.95rem;
   color: #ddd;
+  overflow: auto;
 }
 
 .example h4 {
@@ -220,7 +212,7 @@ strong {
   white-space: pre-wrap;
   font-family: monospace;
   margin: 0.25rem 0 0 0;
-  overflow: auto;
+  overflow-x: auto;
 }
 
 .example-content strong {
