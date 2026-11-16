@@ -109,19 +109,19 @@ function Results({ evaluation, activeMode, gradingError, saveState, retrySave })
 function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const [language, setLanguage] = useState(() => {
-    const userLanguage = getDraftLanguage(uid, problem.id)
-    if (previous) return previous.language
-    if (resumeGuestDraft && readDraft(uid, problem.id, userLanguage) === null) {
-      return getDraftLanguage(null, problem.id)
-    }
-    return userLanguage
+  const [initialDraft] = useState(() => {
+    const guestLanguage = getDraftLanguage(null, problem.id)
+    const guestCode = uid && resumeGuestDraft && !previous ? readDraft(null, problem.id, guestLanguage) : null
+    const language = previous?.language ?? (guestCode === null ? getDraftLanguage(uid, problem.id) : guestLanguage)
+    return { language, storedCode: readDraft(uid, problem.id, language), guestCode }
   })
-  const [code, setCode] = useState(() => previous?.code ?? readDraft(uid, problem.id, language)
-    ?? (resumeGuestDraft ? readDraft(null, problem.id, language) : null) ?? LANGUAGES[language].starter)
+  const [language, setLanguage] = useState(initialDraft.language)
+  const [code, setCode] = useState(() => previous?.code ?? initialDraft.guestCode
+    ?? initialDraft.storedCode ?? LANGUAGES[language].starter)
   const [draftStatus, setDraftStatus] = useState(() => {
     if (previous) return 'Saved submission'
-    return readDraft(uid, problem.id, language) === null ? '' : 'Draft saved on this device'
+    if (initialDraft.guestCode !== null) return 'Resumed from your draft'
+    return initialDraft.storedCode === null ? '' : 'Draft saved on this device'
   })
   const [tab, setTab] = useState(previous || resumeGuestDraft ? 'Editor' : 'Description')
   const [activeMode, setActiveMode] = useState(null)
@@ -132,6 +132,13 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
   const tabList = useRef(null)
 
   useEffect(() => () => request.current?.abort(), [])
+
+  useEffect(() => {
+    if (initialDraft.guestCode !== null && readDraft(uid, problem.id, initialDraft.language) === null) {
+      writeDraft(uid, problem.id, initialDraft.language, initialDraft.guestCode)
+      rememberLanguage(uid, problem.id, initialDraft.language)
+    }
+  }, [initialDraft, problem.id, uid])
 
   function changeLanguage(nextLanguage) {
     const draft = readDraft(uid, problem.id, nextLanguage)
@@ -241,9 +248,11 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
             </div>
           </div>
           <div className="editor-canvas">
-            <Suspense fallback={<p className="notice" role="status">Loading editor…</p>}>
-              <CodeEditor key={language} language={language} code={code} onChange={changeCode} />
-            </Suspense>
+            <div className="editor-host">
+              <Suspense fallback={<p className="notice" role="status">Loading editor…</p>}>
+                <CodeEditor key={language} language={language} code={code} onChange={changeCode} panel={tab} />
+              </Suspense>
+            </div>
           </div>
           {draftStatus && <p className="draft-note">{draftStatus}</p>}
           <Results evaluation={evaluation} activeMode={activeMode} gradingError={gradingError}
@@ -264,6 +273,6 @@ export default function SolvingWorkspace({ problem }) {
   }
 
   const previous = previousId && submissions.find(({ id, problemId }) => id === previousId && problemId === problem.id)
-  return <ProblemEditor key={`${problem.id}:${user?.uid ?? 'guest'}:${location.key}`}
+  return <ProblemEditor key={`${problem.id}:${user?.uid ?? 'guest'}:${location.key}:${previous?.id ?? ''}`}
     uid={user?.uid} problem={problem} previous={previous} resumeGuestDraft={location.state?.resumeGuestDraft} />
 }

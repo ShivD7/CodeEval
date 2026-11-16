@@ -7,7 +7,7 @@ function userSubmissions(uid) {
 
 export function watchSubmissions(uid, onChange, onError) {
   const newestFirst = query(userSubmissions(uid), orderBy('createdAt', 'desc'))
-  return onSnapshot(newestFirst, (snapshot) => {
+  return onSnapshot(newestFirst, { includeMetadataChanges: true }, (snapshot) => {
     onChange(snapshot.docs.map((doc) => ({
       ...doc.data({ serverTimestamps: 'estimate' }),
       id: doc.id,

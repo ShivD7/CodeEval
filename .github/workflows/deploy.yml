@@ -23,7 +23,7 @@ jobs:
 
       # Install Dependencies
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
         working-directory: ./frontend/code-eval
 
       # Build the project

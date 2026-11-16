@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import Editor, { loader } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor/editor/editor.api.js'
 import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker'
@@ -24,13 +25,21 @@ monaco.editor.defineTheme('codeeval-dark', {
   },
 })
 
-export default function CodeEditor({ language, code, onChange }) {
+export default function CodeEditor({ language, code, onChange, panel }) {
+  const editor = useRef(null)
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => editor.current?.layout())
+    return () => cancelAnimationFrame(frame)
+  }, [panel])
+
   return (
     <Editor
       height="100%"
       theme="codeeval-dark"
       language={language}
       value={code}
+      onMount={(instance) => { editor.current = instance }}
       loading={<p className="notice" role="status">Loading editor…</p>}
       onChange={(value) => onChange(value ?? '')}
       options={{

@@ -30,3 +30,8 @@ dist-ssr
 
 # Environment variables
 .env
+
+# Python and local Firebase emulator output
+.venv/
+__pycache__/
+.firebase/

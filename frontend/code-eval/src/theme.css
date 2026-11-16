@@ -113,3 +113,13 @@ input::placeholder { color: var(--quiet); }
   .site-nav { order: 3; min-height: 42px; width: 100%; gap: 1.15rem; }
   .site-account a { padding-right: 0; }
 }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

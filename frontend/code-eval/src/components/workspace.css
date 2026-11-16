@@ -26,8 +26,9 @@
 .editor-toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .45rem; align-items: center; padding: .55rem .65rem; border-bottom: 1px solid var(--line); }
 .editor-toolbar select { font-size: .82rem; min-height: 39px; }
 .editor-actions { display: flex; gap: .45rem; flex-wrap: wrap; }
-.editor-canvas { flex: 1; min-height: 230px; background: #101620; }
-.editor-canvas > .notice { padding: .85rem; }
+.editor-canvas { position: relative; flex: 1; min-height: 230px; background: #101620; }
+.editor-host { position: absolute; inset: 0; }
+.editor-host > .notice { padding: .85rem; }
 .draft-note { padding: .25rem .75rem; color: var(--quiet); font: .7rem var(--mono); background: #101620; }
 .results-panel { display: flex; flex-direction: column; min-height: 125px; max-height: min(35vh, 300px); flex-shrink: 0; border-top: 1px solid var(--line); }
 .results-panel header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .6rem .8rem; border-bottom: 1px solid var(--line); }
@@ -46,14 +47,14 @@
 
 @media (max-width: 850px) {
   .workspace { width: calc(100% - 1.5rem); }
-  .workspace-tabs { display: flex; gap: .4rem; padding: .35rem; margin-bottom: .55rem; }
+  .workspace-tabs { position: sticky; top: 0; z-index: 2; display: flex; gap: .4rem; padding: .35rem; margin-bottom: .55rem; }
   .workspace-tabs button { flex: 1; padding: .45rem .7rem; color: var(--muted); background: transparent; border: 0; border-radius: 6px; }
   .workspace-tabs button[aria-selected='true'] { color: var(--text); background: var(--raised); }
   .workspace-grid { display: block; height: auto; min-height: 0; }
   .workspace-grid > [data-active='false'] { display: none; }
   .workspace-statement { overflow: visible; }
   .workspace-editor { min-height: 545px; }
-  .editor-canvas { min-height: 310px; height: 46vh; }
+  .editor-canvas { flex: 0 0 auto; height: max(310px, 46vh); }
   .results-panel { max-height: min(50vh, 340px); }
 }
 @media (max-width: 390px) {
