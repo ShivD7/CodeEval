@@ -1,127 +1,229 @@
-from flask import Flask, request, jsonify
+import base64
+import binascii
+from concurrent.futures import ThreadPoolExecutor
+import os
+import re
+import time
+
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
-import time
-import base64
-from dotenv import load_dotenv
-import os
-import readFile
 
-def configure():
-    load_dotenv()
+from problem_data import HIDDEN_CASES, PROBLEMS
 
-languages = {
-    "cpp":54,
-    "python": 71,
-    "java":91,
-    "javascript":102
+
+load_dotenv()
+app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 512 * 1024
+CORS(app, resources={r"/execute": {"methods": ["POST"]}})
+
+JUDGE_URL = "https://judge0-ce.p.rapidapi.com/submissions"
+GRADING_TIMEOUT_SECONDS = 22
+REQUEST_TIMEOUT_SECONDS = 4
+MAX_SOURCE_BYTES = 60_000
+LANGUAGES = {"cpp": 54, "python": 71, "java": 91, "javascript": 102}
+VERDICTS = {
+    3: "accepted",
+    4: "wrong_answer",
+    5: "time_limit_exceeded",
+    6: "compilation_error",
+    7: "runtime_error",
+    8: "runtime_error",
+    9: "runtime_error",
+    10: "runtime_error",
+    11: "runtime_error",
+    12: "runtime_error",
+    14: "runtime_error",
+}
+LEGACY_LABELS = {
+    "accepted": "Accepted :)",
+    "wrong_answer": "Rejected :(",
+    "time_limit_exceeded": "Time Limit Exceeded",
+    "compilation_error": "Compilation Error",
+    "runtime_error": "Runtime Error",
 }
 
-app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests (important for React dev server)
-configure()
-def getLanguages():
-    url = "https://judge0-ce.p.rapidapi.com/languages"
 
-    headers = {
-        "x-rapidapi-key": os.getenv('api_key'),
-        "x-rapidapi-host": "judge0-ce.p.rapidapi.com"
-    }
+class JudgeTimeout(Exception):
+    pass
 
-    response = requests.get(url, headers=headers)
 
-    print(response.json())
+class JudgeUnavailable(Exception):
+    pass
 
-def getStatus():
-    url = "https://judge0-ce.p.rapidapi.com/statuses"
 
-    headers = {
-        "x-rapidapi-key": os.getenv('api_key'),
-        "x-rapidapi-host": "judge0-ce.p.rapidapi.com"
-    }
+def encode(value):
+    return base64.b64encode(value.encode("utf-8")).decode("ascii")
 
-    response = requests.get(url, headers=headers)
 
-    print(response.json())
+def decode(value):
+    return base64.b64decode(value or "").decode("utf-8", errors="replace")
 
-def getToken(sourceCode, language, stdin, expected_output):
-    
 
-    url = "https://judge0-ce.p.rapidapi.com/submissions"
+def with_newline(value):
+    return value if value.endswith("\n") else value + "\n"
 
-    querystring = {"base64_encoded":"true","wait":"false","fields":"*"}
 
-    payload = {
-        "language_id": languages[language],
-        "source_code": sourceCode,
-        "stdin": base64.b64encode(stdin.encode()).decode(),
-        "expected_output": base64.b64encode(expected_output.encode()).decode()
-    }
-    headers = {
-        "x-rapidapi-key": os.getenv('api_key'),
-        "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-        "Content-Type": "application/json"
-    }
+def remaining_time(deadline):
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise JudgeTimeout
+    return remaining
 
-    response = requests.post(url, json=payload, headers=headers, params=querystring)
-    print(response)
-    if response.status_code != 201:
-        print("Error:", response.status_code, response.text)
-        raise Exception(f"Judge0 Error {response.status_code}: {response.text}")
-    return response.json()['token']
 
-def getOutput(token):
-    url = "https://judge0-ce.p.rapidapi.com/submissions/" + token
+def judge_request(method, url, deadline, **kwargs):
+    timeout = min(remaining_time(deadline), REQUEST_TIMEOUT_SECONDS)
+    try:
+        response = requests.request(method, url, timeout=timeout, **kwargs)
+        response.raise_for_status()
+        result = response.json()
+        if not isinstance(result, dict):
+            raise ValueError("Expected an object")
+    except requests.Timeout as error:
+        raise JudgeTimeout from error
+    except (requests.RequestException, ValueError) as error:
+        raise JudgeUnavailable from error
 
-    querystring = {"base64_encoded":"true","fields":"*"}
+    remaining_time(deadline)
+    return result
 
-    headers = {
-        "x-rapidapi-key": os.getenv('api_key'),
-        "x-rapidapi-host": "judge0-ce.p.rapidapi.com"
-    }
 
-    response = requests.get(url, headers=headers, params=querystring)
-    print(response.json())
-    return response.json()
+def grade_case(source, language, case, headers, deadline, include_details):
+    submission = judge_request(
+        "POST",
+        JUDGE_URL,
+        deadline,
+        headers=headers,
+        params={"base64_encoded": "true", "wait": "false"},
+        json={
+            "language_id": language,
+            "source_code": source,
+            "stdin": encode(with_newline(case["input"])),
+            "expected_output": encode(with_newline(case["output"])),
+        },
+    )
+    token = submission.get("token")
+    if not isinstance(token, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", token):
+        raise JudgeUnavailable
 
-@app.route('/execute', methods=['POST', 'GET'])
+    while True:
+        result = judge_request(
+            "GET",
+            f"{JUDGE_URL}/{token}",
+            deadline,
+            headers=headers,
+            params={
+                "base64_encoded": "true",
+                "fields": "status_id,stdout,stderr,compile_output,time" if include_details else "status_id",
+            },
+        )
+        status = result.get("status_id")
+        if status not in (1, 2):
+            break
+        time.sleep(min(0.35, remaining_time(deadline)))
+
+    verdict = VERDICTS.get(status) if isinstance(status, int) else None
+    if verdict is None:
+        raise JudgeUnavailable
+
+    if not include_details:
+        return {"verdict": verdict}
+
+    try:
+        return {
+            "verdict": verdict,
+            "output": decode(result.get("stdout")),
+            "diagnostic": decode(result.get("compile_output") or result.get("stderr")),
+            "timeMs": round(float(result["time"]) * 1000) if result.get("time") else None,
+        }
+    except (TypeError, ValueError, OverflowError) as error:
+        raise JudgeUnavailable from error
+
+
+def grade_cases(source, language, cases, include_details):
+    api_key = os.getenv("JUDGE0_API_KEY") or os.getenv("api_key")
+    if not api_key:
+        raise JudgeUnavailable
+
+    deadline = time.monotonic() + GRADING_TIMEOUT_SECONDS
+    headers = {"x-rapidapi-key": api_key, "x-rapidapi-host": "judge0-ce.p.rapidapi.com"}
+    with ThreadPoolExecutor(max_workers=min(len(cases), 4)) as executor:
+        jobs = [
+            executor.submit(grade_case, source, language, case, headers, deadline, include_details)
+            for case in cases
+        ]
+        try:
+            return [job.result() for job in jobs]
+        finally:
+            for job in jobs:
+                job.cancel()
+
+
+@app.errorhandler(413)
+def request_too_large(_error):
+    return jsonify(error="The submission is too large."), 413
+
+
+@app.post("/execute")
 def execute_code():
-    data = request.get_json()
-    code = data.get('code', '')
-    language = data.get('language', '')
-    path = data.get('path', '')
-    # For now, just return a dummy output
-    testCases = readFile.read_file(path)
-    testcaseCount = 1
-    outputString = ''
-    for testcase in testCases:
-        token = getToken(code, language, testcase[0], testcase[1])
-        output = ''
-        while True:
-            output = getOutput(token)
-            if (output['status_id'] == 1 or output['status_id'] == 2):
-                time.sleep(1)
-            elif (output['status_id'] == 3):
-                outputString += "\nTestcase " + str(testcaseCount) + ": Accepted :)"
-                break
-            elif (output['status_id'] == 4):
-                outputString += "\nTestcase " + str(testcaseCount) + ": Rejected :("
-                break
-            elif (output['status_id'] == 5):
-                outputString += "\nTestcase " + str(testcaseCount)+ ": Time Limit Exceeded"
-                break
-            elif (output['status_id'] == 6):
-                outputString += "\nTestcase " + str(testcaseCount) + ": Compilation Error"
-                break
-            elif (output['status_id'] == 6 or output['status_id'] == 7 
-                or output['status_id'] == 8 or output['status_id'] == 9
-                or output['status_id'] == 10 or output['status_id'] == 11
-                or output['status_id'] == 12 or output['status_id'] == 13):
-                outputString += "\nTestcase "+ str(testcaseCount)+ ": Runtime Error"
-                break
-        testcaseCount += 1
-    return jsonify({"output": outputString})
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify(error="Send a JSON object."), 400
+
+    problem_id = data.get("problemId")
+    mode = data.get("mode")
+    code = data.get("code")
+    language = data.get("language")
+
+    # Keep the previous GitHub Pages build working during a backend-first rollout.
+    legacy = "path" in data and "problemId" not in data
+    if legacy:
+        path = data["path"]
+        problem_id = path.removeprefix("/") if isinstance(path, str) else None
+        mode = "submit"
+        try:
+            code = base64.b64decode(code, validate=True).decode("latin-1")
+        except (TypeError, ValueError, binascii.Error):
+            return jsonify(error="The submission code is invalid."), 400
+
+    if not isinstance(problem_id, str) or problem_id not in PROBLEMS:
+        return jsonify(error="Problem not found."), 404
+    if mode not in ("samples", "submit") or not isinstance(language, str) or language not in LANGUAGES:
+        return jsonify(error="Choose a supported language and grading mode."), 400
+    if not isinstance(code, str) or not code.strip():
+        return jsonify(error="Enter some code before running it."), 400
+    try:
+        if len(code.encode("utf-8")) > MAX_SOURCE_BYTES:
+            return jsonify(error="The submission is too large."), 413
+        source = encode(code)
+    except UnicodeEncodeError:
+        return jsonify(error="The submission code is invalid."), 400
+
+    samples = PROBLEMS[problem_id]["samples"]
+    cases = samples if mode == "samples" else samples + HIDDEN_CASES[problem_id]
+    try:
+        results = grade_cases(source, LANGUAGES[language], cases, mode == "samples")
+    except JudgeTimeout:
+        return jsonify(error="The judge took too long to respond. Please try again."), 504
+    except JudgeUnavailable:
+        return jsonify(error="The judge is unavailable. Please try again."), 502
+
+    passed = sum(case["verdict"] == "accepted" for case in results)
+    verdict = next((case["verdict"] for case in results if case["verdict"] != "accepted"), "accepted")
+    if legacy:
+        messages = [f"Testcase {index}: {LEGACY_LABELS[case['verdict']]}" for index, case in enumerate(results, 1)]
+        return jsonify(output="\n".join(messages))
+
+    summary = {"verdict": verdict, "passed": passed, "total": len(results)}
+    if mode == "samples":
+        summary["cases"] = [{"number": index, **case} for index, case in enumerate(results, 1)]
+    else:
+        hidden_results = results[len(samples):]
+        summary["hiddenPassed"] = sum(case["verdict"] == "accepted" for case in hidden_results)
+        summary["hiddenTotal"] = len(hidden_results)
+    return jsonify(summary)
 
 
-if __name__ == '__main__':
-    app.run(debug=True, port=3001)
+if __name__ == "__main__":
+    app.run(port=3001)
