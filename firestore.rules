@@ -1,0 +1,37 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/submissions/{submissionId} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == uid
+          && request.auth.token.email_verified == true;
+      }
+
+      function isValidSubmission() {
+        let data = request.resource.data;
+        let fields = ['problemId', 'language', 'code', 'verdict', 'passed',
+          'total', 'hiddenPassed', 'hiddenTotal', 'createdAt'];
+        return data.keys().hasAll(fields) && data.keys().hasOnly(fields)
+          && data.problemId is string
+          && data.problemId.matches('^[a-z0-9]+(-[a-z0-9]+)*$')
+          && data.problemId.size() <= 80
+          && data.language in ['python', 'javascript', 'cpp', 'java']
+          && data.code is string && data.code.size() > 0 && data.code.size() <= 60000
+          && data.verdict in ['accepted', 'wrong_answer', 'time_limit_exceeded',
+            'compilation_error', 'runtime_error']
+          && data.total is int && data.total > 0
+          && data.passed is int && data.passed >= 0 && data.passed <= data.total
+          && (data.verdict == 'accepted') == (data.passed == data.total)
+          && data.hiddenTotal is int && data.hiddenTotal > 0 && data.hiddenTotal <= data.total
+          && data.hiddenPassed is int && data.hiddenPassed >= 0
+          && data.hiddenPassed <= data.hiddenTotal && data.hiddenPassed <= data.passed
+          && data.passed - data.hiddenPassed <= data.total - data.hiddenTotal
+          && data.createdAt == request.time;
+      }
+
+      allow read: if isOwner();
+      allow create: if isOwner() && isValidSubmission();
+    }
+  }
+}
