@@ -1,14 +1,10 @@
 import { Link, useParams } from 'react-router-dom'
 import { problemsById, problemPath } from '../catalog.js'
 import { LANGUAGES } from '../drafts.js'
-import { submissionDate, useProgress, VERDICTS } from '../progress.js'
+import { submissionDate, useProgress } from '../progress.js'
 import { useSession } from '../session.js'
+import { Icon, Verdict } from './ui.jsx'
 import './history.css'
-
-function Verdict({ submission }) {
-  const verdict = VERDICTS[submission.verdict]
-  return <span className={`verdict verdict-${verdict.tone}`}>{verdict.label}</span>
-}
 
 export default function SubmissionHistory() {
   const { user, loading: accountLoading } = useSession()
@@ -19,7 +15,7 @@ export default function SubmissionHistory() {
 
   return (
     <section className="container history">
-      {submissionId && <Link className="subtle-link" to="/submissions">← All submissions</Link>}
+      {submissionId && <Link className="subtle-link" to="/submissions"><Icon name="back" size={15} />All submissions</Link>}
       <h1>{submission ? problemsById[submission.problemId]?.title ?? submission.problemId : 'Submissions'}</h1>
       {accountLoading || loading ? <p className="notice" role="status">Loading submissions…</p>
         : !user ? (
@@ -32,7 +28,7 @@ export default function SubmissionHistory() {
         ) : submission ? (
           <>
             <div className="submission-details surface">
-              <Verdict submission={submission} />
+              <Verdict value={submission.verdict} />
               <span>{submission.passed} / {submission.total} tests passed</span>
               <span>{LANGUAGES[submission.language].label}</span>
               <time dateTime={submission.createdAt?.toDate().toISOString()}>{submissionDate(submission)}</time>
@@ -56,10 +52,10 @@ export default function SubmissionHistory() {
               <li key={attempt.id}>
                 <Link to={`/submissions/${attempt.id}`}>
                   <strong>{problemsById[attempt.problemId]?.title ?? attempt.problemId}</strong>
-                  <Verdict submission={attempt} />
+                  <Verdict value={attempt.verdict} />
                   <span>{LANGUAGES[attempt.language].label}</span>
                   <time dateTime={attempt.createdAt?.toDate().toISOString()}>{submissionDate(attempt)}</time>
-                  <span aria-hidden="true">↗</span>
+                  <Icon name="chevron" size={15} />
                 </Link>
               </li>
             ))}
