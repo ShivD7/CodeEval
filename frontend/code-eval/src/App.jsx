@@ -8,12 +8,13 @@ import SolvingWorkspace from './components/SolvingWorkspace.jsx'
 import SubmissionHistory from './components/SubmissionHistory.jsx'
 import { problemsById, problemPath } from './catalog.js'
 import { useSession } from './session.js'
+import { Icon } from './components/ui.jsx'
 
 function NotFound() {
   return (
     <section className="container history">
       <h1>Page not found</h1>
-      <Link className="subtle-link" to="/home">← Browse problems</Link>
+      <Link className="subtle-link" to="/home#problem-library"><Icon name="back" size={15} />Browse problems</Link>
     </section>
   )
 }
