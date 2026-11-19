@@ -10,18 +10,21 @@ import 'monaco-editor/languages/definitions/java/register.js'
 globalThis.MonacoEnvironment = { getWorker: () => new EditorWorker() }
 loader.config({ monaco })
 
+const tokens = getComputedStyle(document.documentElement)
+const color = (name) => tokens.getPropertyValue(name).trim()
+
 monaco.editor.defineTheme('codeeval-dark', {
   base: 'vs-dark',
   inherit: true,
   rules: [],
   colors: {
-    'editor.background': '#101620',
-    'editor.foreground': '#ecf1f8',
-    'editor.lineHighlightBackground': '#1a2433',
-    'editorLineNumber.foreground': '#8999ad',
-    'editorLineNumber.activeForeground': '#a5d9a5',
-    'editor.selectionBackground': '#375046',
-    'editorCursor.foreground': '#a5d9a5',
+    'editor.background': color('--editor-bg'),
+    'editor.foreground': color('--text'),
+    'editor.lineHighlightBackground': color('--editor-line'),
+    'editorLineNumber.foreground': color('--muted'),
+    'editorLineNumber.activeForeground': color('--accent'),
+    'editor.selectionBackground': color('--editor-selection'),
+    'editorCursor.foreground': color('--accent'),
   },
 })
 
@@ -45,8 +48,9 @@ export default function CodeEditor({ language, code, onChange, panel }) {
       options={{
         ariaLabel: 'Solution code',
         automaticLayout: true,
-        fontFamily: "'IBM Plex Mono', Consolas, monospace",
+        fontFamily: "'JetBrains Mono', Consolas, monospace",
         fontSize: 14,
+        lineHeight: 23,
         minimap: { enabled: false },
         padding: { top: 14, bottom: 14 },
         scrollBeyondLastLine: false,

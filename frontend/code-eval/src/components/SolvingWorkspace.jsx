@@ -3,19 +3,26 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LANGUAGES, getDraftLanguage, readDraft, rememberLanguage, writeDraft } from '../drafts.js'
 import { saveSubmission } from '../firebase/submissions.js'
 import { evaluateCode } from '../grading.js'
-import { useProgress, VERDICTS } from '../progress.js'
+import { useProgress } from '../progress.js'
 import { useSession } from '../session.js'
+import { Difficulty, Icon, Verdict } from './ui.jsx'
 import './workspace.css'
 
 const CodeEditor = lazy(() => import('./CodeEditor.jsx'))
-const TABS = ['Description', 'Editor']
+const TABS = ['Description', 'Code', 'Results']
+
+function constrainPaneWidth(value, gridWidth) {
+  const minimum = Math.ceil(Math.max(28, 260 / gridWidth * 100))
+  const maximum = Math.floor(Math.min(62, (gridWidth - 310) / gridWidth * 100))
+  return Math.round(Math.max(minimum, Math.min(maximum, value)))
+}
 
 function ProblemStatement({ problem }) {
   return (
     <>
       <div className="statement-heading">
         <div className="statement-meta">
-          <span className={`difficulty difficulty-${problem.difficulty.toLowerCase()}`}>{problem.difficulty}</span>
+          <Difficulty value={problem.difficulty} />
           <span>{problem.topics.join(' · ')}</span>
         </div>
         <h1>{problem.title}</h1>
@@ -54,7 +61,6 @@ function ProblemStatement({ problem }) {
 
 function Results({ evaluation, activeMode, gradingError, saveState, retrySave }) {
   const result = evaluation?.result
-  const verdict = result && VERDICTS[result.verdict]
   return (
     <section className="results-panel" aria-labelledby="results-heading">
       <header>
@@ -62,12 +68,12 @@ function Results({ evaluation, activeMode, gradingError, saveState, retrySave })
         {evaluation && !activeMode && <span>{evaluation.mode === 'samples' ? 'Samples' : 'Submission'}</span>}
       </header>
       <div className="results-body">
-        {activeMode ? <p className="notice" role="status">{activeMode === 'samples' ? 'Running samples…' : 'Grading submission…'}</p>
+        {activeMode ? <p className="notice running-state" role="status"><Icon name="clock" size={16} />{activeMode === 'samples' ? 'Running samples…' : 'Grading submission…'}</p>
           : gradingError ? <p className="notice error-notice" role="alert">{gradingError}</p>
             : result ? (
               <>
                 <div className="result-summary" role="status">
-                  <strong className={`verdict verdict-${verdict.tone}`}>{verdict.label}</strong>
+                  <Verdict value={result.verdict} />
                   <span>{result.passed} / {result.total} {evaluation.mode === 'samples' ? 'samples' : 'tests'} passed</span>
                   {evaluation.mode === 'submit' && <span>{result.hiddenPassed} / {result.hiddenTotal} hidden tests passed</span>}
                 </div>
@@ -77,7 +83,7 @@ function Results({ evaluation, activeMode, gradingError, saveState, retrySave })
                       <details key={item.number} open={item.verdict !== 'accepted' || undefined}>
                         <summary>
                           <strong>Sample {item.number}</strong>
-                          <span className={`verdict verdict-${VERDICTS[item.verdict].tone}`}>{VERDICTS[item.verdict].label}</span>
+                          <Verdict value={item.verdict} />
                           {item.timeMs !== null && <span>{item.timeMs} ms</span>}
                         </summary>
                         <dl>
@@ -123,15 +129,29 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
     if (initialDraft.guestCode !== null) return 'Resumed from your draft'
     return initialDraft.storedCode === null ? '' : 'Draft saved on this device'
   })
-  const [tab, setTab] = useState(previous || resumeGuestDraft ? 'Editor' : 'Description')
+  const [tab, setTab] = useState(previous || resumeGuestDraft ? 'Code' : 'Description')
+  const [layout, setLayout] = useState('tabs')
+  const [statementWidth, setStatementWidth] = useState(40)
   const [activeMode, setActiveMode] = useState(null)
   const [evaluation, setEvaluation] = useState(null)
   const [gradingError, setGradingError] = useState('')
   const [saveState, setSaveState] = useState(null)
   const request = useRef(null)
   const tabList = useRef(null)
+  const splitGrid = useRef(null)
 
   useEffect(() => () => request.current?.abort(), [])
+
+  useEffect(() => {
+    const grid = splitGrid.current
+    const observer = new ResizeObserver(() => {
+      if (getComputedStyle(grid).display === 'grid') {
+        setStatementWidth((current) => constrainPaneWidth(current, grid.clientWidth))
+      }
+    })
+    observer.observe(grid)
+    return () => observer.disconnect()
+  }, [layout])
 
   useEffect(() => {
     if (initialDraft.guestCode !== null && readDraft(uid, problem.id, initialDraft.language) === null) {
@@ -171,6 +191,11 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
       navigate('/login', { state: { returnTo: location.pathname, continueGuestDraft: true } })
       return
     }
+    setTab('Results')
+    requestAnimationFrame(() => {
+      const resultsTab = tabList.current?.querySelector('#tab-results')
+      if (resultsTab?.getClientRects().length) resultsTab.focus()
+    })
     if (!code.trim()) {
       setEvaluation(null)
       setGradingError('Enter some code before running it.')
@@ -201,11 +226,12 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
   }
 
   function moveTab(event) {
+    const index = TABS.indexOf(tab)
     const next = {
-      ArrowLeft: tab === 'Editor' ? 'Description' : 'Editor',
-      ArrowRight: tab === 'Editor' ? 'Description' : 'Editor',
+      ArrowLeft: TABS[(index + TABS.length - 1) % TABS.length],
+      ArrowRight: TABS[(index + 1) % TABS.length],
       Home: 'Description',
-      End: 'Editor',
+      End: 'Results',
     }[event.key]
 
     if (next) {
@@ -215,11 +241,32 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
     }
   }
 
+  function resizePane(value) {
+    setStatementWidth(constrainPaneWidth(value, splitGrid.current.clientWidth))
+  }
+
+  function resizeWithKeyboard(event) {
+    const next = { ArrowLeft: statementWidth - 2, ArrowRight: statementWidth + 2, Home: 28, End: 62 }[event.key]
+    if (next !== undefined) {
+      event.preventDefault()
+      resizePane(next)
+    }
+  }
+
   return (
-    <div className="workspace">
+    <div className="workspace" data-layout={layout} style={{ '--statement-width': `${statementWidth}%` }}
+      onKeyDownCapture={(event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+          event.preventDefault()
+          event.stopPropagation()
+          grade(event.shiftKey ? 'submit' : 'samples')
+        }
+      }}>
       <div className="workspace-breadcrumb">
-        <Link className="subtle-link" to={problem.group === 'Club Contest' ? '/contests' : '/home'}>← {problem.group}</Link>
+        <Link className="subtle-link" to={problem.group === 'Club Contest' ? '/contests' : '/home#problem-library'}><Icon name="back" size={15} />{problem.group}</Link>
         <span aria-hidden="true">/</span><span>{problem.title}</span>
+        <button className="button button-secondary layout-toggle" type="button" aria-pressed={layout === 'split'}
+          onClick={() => setLayout(layout === 'tabs' ? 'split' : 'tabs')}>{layout === 'tabs' ? 'Split view' : 'Tabbed view'}</button>
       </div>
       <div className="workspace-tabs surface" role="tablist" aria-label="Problem workspace" ref={tabList} onKeyDown={moveTab}>
         {TABS.map((item) => (
@@ -228,13 +275,31 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
             onClick={() => setTab(item)} key={item}>{item}</button>
         ))}
       </div>
-      <div className="workspace-grid">
+      <div className="workspace-grid" ref={splitGrid}>
         <section className="surface workspace-statement" role="tabpanel" id="panel-description"
           aria-labelledby="tab-description" data-active={tab === 'Description'} tabIndex={0}>
           <ProblemStatement problem={problem} />
         </section>
-        <section className="surface workspace-editor" role="tabpanel" id="panel-editor"
-          aria-labelledby="tab-editor" data-active={tab === 'Editor'}>
+        <div className="pane-separator" role="separator" aria-label="Resize problem statement"
+          aria-orientation="vertical" aria-valuemin={28} aria-valuemax={62} aria-valuenow={statementWidth}
+          aria-valuetext={`${statementWidth}% statement width`} aria-controls="panel-description panel-code"
+          tabIndex={0} onKeyDown={resizeWithKeyboard}
+          onPointerDown={(event) => {
+            if (event.button !== 0) return
+            event.preventDefault()
+            event.currentTarget.setPointerCapture(event.pointerId)
+          }}
+          onPointerMove={(event) => {
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+              const bounds = splitGrid.current.getBoundingClientRect()
+              resizePane((event.clientX - bounds.left) / bounds.width * 100)
+            }
+          }}
+          onPointerUp={(event) => {
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
+          }}><span /></div>
+        <section className="surface workspace-editor" role="tabpanel" id="panel-code"
+          aria-labelledby="tab-code" data-active={tab === 'Code'}>
           <div className="editor-toolbar">
             <select aria-label="Language" value={language} disabled={Boolean(activeMode)}
               onChange={(event) => changeLanguage(event.target.value)}>
@@ -242,19 +307,24 @@ function ProblemEditor({ problem, uid, previous, resumeGuestDraft }) {
             </select>
             <div className="editor-actions">
               <button className="button button-secondary" type="button" disabled={Boolean(activeMode)}
-                onClick={() => grade('samples')}>Run Samples</button>
+                title="Run Samples (Ctrl/Cmd + Enter)" aria-keyshortcuts="Control+Enter Meta+Enter"
+                onClick={() => grade('samples')}><Icon name={activeMode === 'samples' ? 'clock' : 'play'} size={15} />Run Samples</button>
               <button className="button button-primary" type="button" disabled={Boolean(activeMode)}
-                onClick={() => grade('submit')}>{uid ? 'Submit' : 'Sign in to submit'}</button>
+                title="Submit (Ctrl/Cmd + Shift + Enter)" aria-keyshortcuts="Control+Shift+Enter Meta+Shift+Enter"
+                onClick={() => grade('submit')}><Icon name={activeMode === 'submit' ? 'clock' : 'send'} size={15} />{uid ? 'Submit' : 'Sign in to submit'}</button>
             </div>
           </div>
           <div className="editor-canvas">
             <div className="editor-host">
               <Suspense fallback={<p className="notice" role="status">Loading editor…</p>}>
-                <CodeEditor key={language} language={language} code={code} onChange={changeCode} panel={tab} />
+                <CodeEditor key={language} language={language} code={code} onChange={changeCode} panel={`${tab}:${layout}`} />
               </Suspense>
             </div>
           </div>
           {draftStatus && <p className="draft-note">{draftStatus}</p>}
+        </section>
+        <section className="surface workspace-results" role="tabpanel" id="panel-results"
+          aria-labelledby="tab-results" data-active={tab === 'Results'} tabIndex={0}>
           <Results evaluation={evaluation} activeMode={activeMode} gradingError={gradingError}
             saveState={saveState} retrySave={() => persist(saveState.attempt)} />
         </section>
